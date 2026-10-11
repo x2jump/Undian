@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aku Juara - Roda Undian Realtime</title>
+    
+    <!-- Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-image: url('./images/bg.jpg'); /* Gambar Lokal Android Studio */
+            background-color: #f1f5f9; 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed;
+            overflow-x: hidden; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        .hide { display: none !important; }
+        
+        /* 
+           Glassmorphism Cerah Biasa 
+           Menampilkan keindahan background namun tetap memberikan batas elemen 
+        */
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.35); 
+            backdrop-filter: blur(14px); 
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.6); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
+            border-radius: 28px; 
+        }
+        
+        .glass-nav { 
+            background: rgba(255, 255, 255, 0.5); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.7); 
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1); 
+            border-radius: 9999px; 
+        }
+
+        .solid-input {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            color: #1e293b !important;
+            border: 1px solid rgba(203, 213, 225, 0.8) !important;
+            border-radius: 20px;
+        }
+
+        /* Efek Stabillo Kuning agar teks selalu terbaca */
+        .stabillo {
+            background-color: rgba(253, 224, 71, 0.9); /* Kuning Cerah */
+            color: #0f172a !important; /* Teks Gelap */
+            padding: 2px 10px;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Wheel */
+        #wheel-container { position: relative; width: 100%; max-width: 400px; margin: 0 auto; aspect-ratio: 1/1; filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.2)); }
+        #wheel-canvas { width: 100%; height: 100%; border-radius: 50%; display: block; }
+        
+        .pointer {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 20;
+            width: 36px; height: 46px; background: #ef4444; 
+            clip-path: polygon(50% 100%, 0 0, 100% 0); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            transition: background-color 0.1s ease;
+        }
+
+        .spin-center-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
+            width: 85px; height: 85px; border-radius: 50%; background: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2rem; color: #1e3a8a;
+            box-shadow: 0 0 0 8px rgba(255,255,255,0.6), 0 10px 20px rgba(0,0,0,0.3);
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .spin-center-btn:hover { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 0 10px rgba(255,255,255,0.7), 0 15px 30px rgba(0,0,0,0.4); }
+        .spin-center-btn:active { transform: translate(-50%, -50%) scale(0.95); }
+
+        .floating-notif {
+            position: absolute; padding: 8px 16px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; color: white;
+            box-shadow: 0 10px 20px -3px rgba(0,0,0,0.3); z-index: 30; border: 1px solid rgba(255,255,255,0.4);
+            animation: floatUp 3s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none;
+        }
+        @keyframes floatUp {
+            0% { opacity: 0; transform: translateY(20px) scale(0.8); }
+            15% { opacity: 1; transform: translateY(0) scale(1.1); }
+            30% { transform: translateY(-5px) scale(1); }
+            80% { opacity: 1; transform: translateY(-30px); }
+            100% { opacity: 0; transform: translateY(-50px); }
+        }
+
+        #bottom-navbar { width: 95%; max-width: 600px; padding: 8px; bottom: 25px; }
+        .nav-btn.active { background-color: rgba(255, 255, 255, 0.95); color: #2563eb; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased h-screen flex flex-col overflow-hidden relative">
+
+    <!-- MODALS -->
+    <div id="custom-alert" class="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center hide backdrop-blur-sm transition-opacity">
+        <div class="glass-panel bg-white/90 p-8 max-w-sm w-full mx-4 text-center">
+            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-5 text-3xl shadow-sm">
+                <i class="fa-solid fa-circle-info"></i>
+            </div>
+            <h3 id="custom-alert-title" class="text-xl font-bold text-slate-800 mb-2">Info</h3>
+            <p id="custom-alert-message" class="text-slate-600 text-sm mb-8 whitespace-pre-wrap leading-relaxed"></p>
+            <button type="button" onclick="closeCustomAlert()" class="w-full bg-blue-600 text-white hover:bg-blue-700 font-bold py-4 rounded-2xl transition-colors shadow-lg">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- PORTAL LOGIN -->
+    <div id="portal-view" class="fixed inset-0 z-[200] flex flex-col items-center justify-center hide overflow-y-auto bg-black/10 backdrop-blur-sm">
+        <!-- Kotak frame login diperkecil, logo diperbesar & keluar frame -->
+        <div class="relative w-full max-w-[320px] mx-4 mt-28 mb-8">
+            <div class="absolute -top-28 left-1/2 -translate-x-1/2 w-48 h-48 shadow-2xl rounded-full glass-panel p-3 z-10 flex items-center justify-center bg-white/40">
+                <img src="./images/logo.png" alt="Logo" class="w-full h-full object-contain rounded-full drop-shadow-xl" onerror="this.src='https://i.ibb.co/YFjwZLMH/logo.png'">
+            </div>
+
+            <div class="glass-panel px-6 pb-8 pt-24 shadow-2xl text-center relative z-0 mt-6 bg-white/60 border-t-white/80">
+                <h1 class="text-3xl font-extrabold text-slate-800 mb-6 drop-shadow-sm tracking-tight stabillo">Aku Juara</h1>
+                
+                <form id="login-form" onsubmit="handleEmailLogin(event)" class="space-y-4 text-left mb-6">
+                    <div>
+                        <label class="block text-slate-700 text-[11px] font-bold mb-1 ml-1 uppercase tracking-wider">Email Akun</label>
+                        <input type="email" id="login-email" required class="solid-input w-full px-5 py-4 text-sm focus:ring-4 focus:ring-blue-400/30 outline-none transition-all shadow-inner" placeholder="email@anda.com">
+                    </div>
+                    <div>
+                        <label class="block text-slate-700 text-[11px] font-bold mb-1 ml-1 uppercase tracking-wider">Password</label>
+                        <input type="password" id="login-password" required class="solid-input w-full px-5 py-4 text-sm focus:ring-4 focus:ring-blue-400/30 outline-none transition-all shadow-inner" placeholder="••••••••">
+                    </div>
+                    <button type="submit" id="btn-email-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-2xl shadow-xl transition-transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 border border-blue-400/30 text-base mt-2">
+                        <i class="fa-solid fa-right-to-bracket"></i> Masuk / Daftar
+                    </button>
+                </form>
+
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-px bg-slate-300 flex-1"></div>
+                    <span class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">ATAU</span>
+                    <div class="h-px bg-slate-300 flex-1"></div>
+                </div>
+
+                <button type="button" onclick="loginAsGuest()" class="w-full bg-white text-slate-800 hover:bg-slate-50 font-bold py-4 px-4 rounded-2xl shadow-md transition-transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 text-sm border border-slate-200">
+                    <i class="fa-solid fa-user-ninja text-blue-600"></i> Masuk sebagai Tamu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REWARD AD MODAL -->
+    <div id="rewarded-ad-modal" class="fixed inset-0 bg-black/60 z-[150] flex items-center justify-center hide backdrop-blur-md transition-opacity">
+        <div class="glass-panel bg-white/90 p-8 max-w-sm w-full mx-4 text-center">
+            <div class="w-20 h-20 bg-gradient-to-tr from-amber-400 to-amber-600 text-white rounded-full flex items-center justify-center mx-auto mb-5 text-4xl shadow-xl border-4 border-white">
+                <i class="fa-solid fa-circle-play"></i>
+            </div>
+            <h3 id="reward-title" class="text-xl font-extrabold text-slate-800 mb-3 tracking-tight">Konfirmasi</h3>
+            <p id="reward-desc" class="text-slate-600 text-sm mb-8 leading-relaxed">Silakan saksikan iklan singkat untuk melanjutkan.</p>
+            <div class="flex gap-4">
+                <button type="button" onclick="closeRewardedAdModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-4 rounded-2xl transition-colors">Batal</button>
+                <button type="button" onclick="confirmWatchRewardedAd()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 rounded-2xl shadow-xl transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WINNER MODAL (Diperkecil & Estetik) -->
+    <div id="winner-modal" class="fixed inset-0 bg-black/60 z-[400] flex items-center justify-center hide backdrop-blur-sm transition-opacity">
+        <div class="glass-panel p-6 max-w-sm w-full mx-4 text-center relative overflow-hidden border-2 border-amber-400 shadow-[0_0_40px_rgba(251,191,36,0.3)] rounded-3xl bg-white/95">
+            <div class="relative z-10">
+                <div class="w-20 h-20 bg-gradient-to-tr from-yellow-400 to-amber-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl text-4xl border-4 border-white animate-bounce">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h3 class="text-xs font-bold text-slate-500 mb-2 tracking-widest uppercase">Selamat Kepada</h3>
+                <p id="winner-name" class="text-4xl md:text-5xl font-black text-slate-800 mb-8 break-words leading-tight drop-shadow-sm"></p>
+                <button type="button" onclick="closeWinnerModal()" class="w-full bg-blue-600 text-white hover:bg-blue-700 font-extrabold py-4 rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 text-sm uppercase tracking-wide">
+                    Tutup & Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HISTORY MODAL -->
+    <div id="history-modal" class="fixed inset-0 bg-black/60 z-[150] flex items-center justify-center hide backdrop-blur-sm transition-opacity">
+        <div class="glass-panel bg-white/95 p-6 max-w-sm w-full mx-4">
+            <div class="flex justify-between items-center mb-5 border-b border-slate-200 pb-4">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fa-solid fa-clock-rotate-left"></i></div> Riwayat Room
+                </h3>
+                <button type="button" onclick="closeHistoryModal()" class="text-slate-400 hover:text-slate-600 w-10 h-10 flex items-center justify-center bg-slate-100 rounded-full"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div id="history-list" class="space-y-3 max-h-72 overflow-y-auto pr-2 mb-2">
+                <!-- Data via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div id="app-view" class="h-full flex flex-col hide relative">
+        
+        <!-- Header -->
+        <header class="px-5 py-4 flex justify-between items-center glass-panel !rounded-none !border-x-0 !border-t-0 z-10 flex-shrink-0 bg-white/40">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center p-1 bg-white/70">
+                    <img src="./images/logo.png" alt="Logo" class="w-full h-full object-contain rounded-full drop-shadow-sm" onerror="this.src='https://i.ibb.co/YFjwZLMH/logo.png'">
+                </div>
+                <div>
+                    <h1 class="text-xl font-black text-slate-800 leading-tight tracking-tight stabillo">Aku Juara</h1>
+                    <p id="header-room-id" class="text-[10px] font-bold text-slate-600 font-mono tracking-widest uppercase bg-white/60 inline-block px-2 py-0.5 rounded-md mt-1 border border-slate-200/50">Room: ----</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="openHistoryModal()" class="glass-panel bg-white/60 text-slate-700 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm" title="Riwayat Room">
+                    <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+                </button>
+                <button type="button" onclick="requestActionWithReward('create_room')" class="bg-blue-600 hover:bg-blue-700 text-white border border-blue-400/50 px-4 py-2.5 rounded-full text-xs font-extrabold transition-all shadow-md hover:shadow-blue-500/30 flex items-center gap-2">
+                    <i class="fa-solid fa-plus text-sm"></i> <span class="hidden sm:inline">Buat Baru</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Scrollable Area -->
+        <main class="flex-1 overflow-y-auto w-full min-h-0 pb-32" id="main-scroll-area">
+            
+            <!-- VIEW: WHEEL -->
+            <section id="view-wheel" class="w-full max-w-4xl mx-auto h-full flex flex-col items-center pt-6 px-4 relative">
+                
+                <!-- Kategori Filter -->
+                <div id="category-filter-container" class="w-full mb-6 hide">
+                    <div class="flex items-center justify-center gap-2 mb-3">
+                        <span class="w-6 h-6 rounded-full bg-white/50 flex items-center justify-center shadow-sm"><i class="fa-solid fa-layer-group text-blue-600 text-xs"></i></span>
+                        <span id="category-filter-label" class="text-xs font-black text-slate-800 uppercase tracking-widest stabillo">Kategori</span>
+                    </div>
+                    <div id="category-chips" class="flex overflow-x-auto pb-2 gap-2 justify-start sm:justify-center px-2 scrollbar-hide w-full max-w-full">
+                        <!-- Chips via JS -->
+                    </div>
+                </div>
+
+                <!-- Wheel Area -->
+                <div id="wheel-container">
+                    <div id="wheel-pointer" class="pointer"></div>
+                    <canvas id="wheel-canvas"></canvas>
+                    <div class="spin-center-btn" onclick="spinWheel()">SPIN</div>
+                </div>
+
+                <div class="mt-8 mb-6 text-center">
+                    <p id="participant-count" class="text-slate-800 font-black text-sm glass-panel bg-white/60 px-6 py-2.5 rounded-full inline-block shadow-sm border-white/80 stabillo">
+                        0 Peserta siap diputar
+                    </p>
+                </div>
+
+                <!-- Winners History -->
+                <div class="w-full max-w-md mx-auto mt-2 glass-panel bg-white/40 p-5 mb-10">
+                    <h3 class="text-xs font-black text-slate-700 mb-4 flex items-center gap-3 uppercase tracking-wider border-b border-slate-200/50 pb-3">
+                        <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center"><i class="fa-solid fa-award"></i></div> 10 Pemenang Terakhir
+                    </h3>
+                    <div id="winner-history-list" class="space-y-2">
+                        <p class="text-xs text-slate-500 text-center italic font-medium py-3">Belum ada pemenang</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: DATA -->
+            <section id="view-data" class="w-full max-w-6xl mx-auto hide pt-6 px-4">
+                
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4 glass-panel bg-white/50 p-5 w-full shadow-sm">
+                    <div class="flex flex-wrap items-center justify-between w-full lg:w-auto gap-4">
+                        <h2 class="text-lg font-black text-slate-800 flex items-center gap-3 stabillo">
+                            <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div> Data Pendaftar
+                        </h2>
+                        
+                        <label class="flex items-center cursor-pointer bg-white/80 hover:bg-white px-3 py-2 rounded-xl border border-slate-200 transition-colors shadow-sm">
+                            <input type="checkbox" id="toggle-eliminate" class="w-4 h-4 text-red-500 rounded focus:ring-red-400 border-slate-300 bg-slate-100" onchange="toggleElimination(this.checked)">
+                            <span class="ml-2 text-[11px] font-bold text-slate-700">Eliminasi Pemenang</span>
+                        </label>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto mt-2 lg:mt-0">
+                        <input type="file" id="import-file" accept=".xlsx, .xls, .csv" class="hidden" onchange="processImport(event)">
+                        
+                        <button type="button" onclick="handleAdmobAction('import')" class="flex-1 lg:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-file-import"></i> Import
+                        </button>
+                        <button type="button" onclick="handleAdmobAction('export_excel')" class="flex-1 lg:flex-none glass-panel bg-white/80 hover:bg-white text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-file-excel text-green-500 text-sm"></i> Excel
+                        </button>
+                        <button type="button" onclick="handleAdmobAction('export_pdf')" class="flex-1 lg:flex-none glass-panel bg-white/80 hover:bg-white text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-file-pdf text-red-500 text-sm"></i> PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Input Manual -->
+                <div class="glass-panel bg-white/50 p-5 mb-6 shadow-sm">
+                    <form id="manual-add-form" class="flex flex-col md:flex-row gap-3" onsubmit="addManualEntry(event)">
+                        <div id="manual-inputs-container" class="flex-1 flex flex-col md:flex-row gap-3"></div>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-extrabold text-xs transition-transform hover:scale-105 active:scale-95 whitespace-nowrap shadow-md flex items-center justify-center gap-2 border border-blue-400/30">
+                            <i class="fa-solid fa-plus text-sm"></i> Tambah Manual
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tabel -->
+                <div class="glass-panel bg-white/70 overflow-hidden w-full mb-10 shadow-sm border-white/80">
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-left text-[11px] text-slate-700">
+                            <thead class="bg-slate-100/80 border-b border-slate-200 font-black tracking-wider" id="table-head">
+                                <!-- JS -->
+                            </thead>
+                            <tbody class="divide-y divide-slate-200/50" id="table-body">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="empty-state" class="p-12 text-center hide">
+                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300 text-3xl shadow-inner"><i class="fa-solid fa-folder-open"></i></div>
+                        <p class="text-slate-600 font-bold text-sm mb-1">Belum ada data pendaftar.</p>
+                        <p class="text-slate-400 text-xs">Silakan tambah manual atau import dari Excel.</p>
+                    </div>
+                    <div class="p-3 bg-slate-50/50 border-t border-slate-200/50 flex justify-end">
+                        <button type="button" onclick="confirmCustomAction('Kosongkan semua data pendaftar?', clearAllData)" class="bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 px-4 py-2 rounded-xl font-bold text-[10px] transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-trash-can"></i> Bersihkan Semua Data
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: SHARE & FORM -->
+            <section id="view-share" class="w-full max-w-6xl mx-auto hide pt-6 px-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+                    
+                    <!-- Form Editor -->
+                    <div class="glass-panel bg-white/60 p-6 flex flex-col relative overflow-hidden shadow-sm border-white/80">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-lg shadow-inner"><i class="fa-solid fa-pen-to-square"></i></div>
+                            <h2 class="text-xl font-black text-slate-800 stabillo">Pengaturan Formulir</h2>
+                        </div>
+
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 mb-1.5 uppercase tracking-widest ml-1">Judul Formulir</label>
+                                <input type="text" id="config-title" oninput="updateFormPreview()" class="solid-input w-full px-4 py-3 text-xs focus:ring-4 focus:ring-blue-100 outline-none transition-all shadow-sm">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 mb-1.5 uppercase tracking-widest ml-1">Deskripsi Singkat</label>
+                                <textarea id="config-subtitle" oninput="updateFormPreview()" rows="2" class="solid-input w-full px-4 py-3 text-xs focus:ring-4 focus:ring-blue-100 outline-none resize-none transition-all shadow-sm"></textarea>
+                            </div>
+                            
+                            <!-- Field Builder -->
+                            <div class="pt-5 border-t border-slate-200 relative">
+                                <div id="form-lock-overlay" class="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center text-center hide rounded-xl border border-slate-200 mt-2">
+                                    <div class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center mb-2 border border-red-200 text-xl"><i class="fa-solid fa-lock"></i></div>
+                                    <p class="text-xs font-bold text-slate-700 px-4">Kolom Isian Terkunci<br><span class="font-normal text-slate-500 text-[10px] mt-1 block">Roda sudah pernah diputar. Buat Room baru untuk merombak kolom.</span></p>
+                                </div>
+
+                                <div class="flex justify-between items-center mb-4">
+                                    <p class="text-xs font-black text-slate-700 tracking-wide">Susunan Kolom Isian</p>
+                                    <span id="field-count-badge" class="text-[9px] bg-slate-200 font-bold text-slate-600 px-2 py-1 rounded-md"></span>
+                                </div>
+                                <div id="editor-fields-container" class="space-y-2.5 mb-5"></div>
+                                <button type="button" id="btn-add-field" onclick="requestActionWithReward('add_field')" class="w-full py-3 border-2 border-dashed border-slate-300 text-slate-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-plus"></i> Tambah Kolom Baru <i class="fa-solid fa-circle-play text-amber-500 ml-1 text-sm" title="Tonton Iklan"></i>
+                                </button>
+                            </div>
+
+                            <button type="button" onclick="saveFormConfig()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3.5 rounded-xl transition-transform hover:scale-105 active:scale-95 shadow-md flex justify-center items-center gap-2 mt-4 text-xs uppercase tracking-wider">
+                                <i class="fa-solid fa-floppy-disk text-sm"></i> Simpan Pengaturan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Share & Live Preview -->
+                    <div class="space-y-6">
+                        <div class="glass-panel bg-white/60 p-6 relative overflow-hidden shadow-sm border-white/80">
+                            <h3 class="text-lg font-black mb-1.5 text-slate-800 flex items-center gap-2 stabillo">
+                                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm"><i class="fa-solid fa-share-nodes"></i></div> Sebarkan Link
+                            </h3>
+                            <p class="text-slate-500 text-[11px] mb-4 font-medium leading-relaxed">Peserta yang mengisi dari link ini otomatis masuk ke Roda Putar.</p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <div class="bg-white border border-slate-300 rounded-xl px-4 py-3 flex-1 overflow-hidden flex items-center shadow-inner">
+                                    <span id="share-link-text" class="text-xs font-mono truncate w-full select-all font-bold text-slate-700"></span>
+                                </div>
+                                <button type="button" onclick="copyShareLink()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-3 rounded-xl font-bold transition-transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shadow-md text-xs">
+                                    <i class="fa-solid fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Mini Preview -->
+                        <div class="glass-panel bg-slate-50/50 p-6 relative border-2 border-dashed border-slate-300 shadow-inner">
+                            <div class="absolute top-0 right-0 bg-blue-100 text-blue-700 font-bold px-3 py-1.5 rounded-bl-xl rounded-tr-[26px] text-[9px] uppercase tracking-widest border-b border-l border-blue-200">Live Preview Form</div>
+                            <div class="bg-white p-5 rounded-xl shadow-lg pointer-events-none mt-3 border border-slate-200">
+                                <div class="text-center mb-5 border-b border-slate-100 pb-4">
+                                    <h1 id="preview-title" class="text-lg font-extrabold text-slate-800 mb-1 tracking-tight"></h1>
+                                    <p id="preview-subtitle" class="text-slate-500 text-[10px] leading-relaxed"></p>
+                                </div>
+                                <div id="preview-fields" class="space-y-3"></div>
+                                <div class="mt-5">
+                                    <div class="w-full bg-blue-500 h-10 rounded-xl shadow-sm shadow-blue-500/20"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Navbar Bottom (Melayang, Estetik, Transparan) -->
+        <nav id="bottom-navbar" class="fixed left-1/2 -translate-x-1/2 glass-nav flex items-center justify-between z-50 transition-transform">
+            <button type="button" onclick="switchView('wheel')" id="nav-wheel" class="nav-btn active flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center gap-2 text-slate-600 hover:bg-white/50">
+                <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center p-0.5 shadow-sm"><img src="./images/logo.png" class="w-full h-full object-contain rounded-full" onerror="this.src='https://i.ibb.co/YFjwZLMH/logo.png'"></div> <span class="hidden sm:inline tracking-wide">Roda Spin</span>
+            </button>
+            <button type="button" onclick="switchView('data')" id="nav-data" class="nav-btn text-slate-600 hover:bg-white/50 flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center gap-2">
+                <i class="fa-solid fa-table-list text-lg"></i> <span class="hidden sm:inline tracking-wide">Data Tabel</span>
+            </button>
+            <button type="button" onclick="switchView('share')" id="nav-share" class="nav-btn text-slate-600 hover:bg-white/50 flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center gap-2">
+                <i class="fa-solid fa-link text-lg"></i> <span class="hidden sm:inline tracking-wide">Sebar Form</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- GUEST PUBLIC FORM VIEW (Tampilan HP Pendaftar) -->
+    <div id="form-view" class="fixed inset-0 bg-slate-50 z-[100] hide overflow-y-auto">
+        <div class="max-w-md mx-auto min-h-screen bg-white shadow-2xl sm:my-10 sm:rounded-[40px] border border-slate-100 flex flex-col relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-50 to-white"></div>
+            <div class="p-8 flex-1 relative z-10 pt-12">
+                <div class="text-center mb-8 border-b border-slate-100 pb-6">
+                    <img src="./images/logo.png" alt="Logo" class="w-20 h-20 mx-auto rounded-full object-contain shadow-md mb-5 bg-white border-4 border-blue-50" onerror="this.src='https://i.ibb.co/YFjwZLMH/logo.png'">
+                    <h1 id="public-title" class="text-2xl font-black text-slate-800 mb-2 tracking-tight"></h1>
+                    <p id="public-subtitle" class="text-slate-500 text-xs leading-relaxed"></p>
+                </div>
+
+                <form id="public-form" onsubmit="submitForm(event)" class="space-y-5">
+                    <div id="public-fields-container" class="space-y-4"></div>
+                    <button type="submit" id="btn-submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl shadow-lg shadow-blue-500/30 transition-transform active:scale-95 mt-8 text-base flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Kirim Sekarang
+                    </button>
+                </form>
+            </div>
+            <div class="bg-slate-50 p-4 text-center border-t border-slate-100 sm:rounded-b-[40px] relative z-10">
+                <p class="text-[10px] text-slate-400 font-bold tracking-wide">Ditenagai oleh <b>Aku Juara</b></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DEKLARASI FIREBASE ---
+        let app, db, auth;
+
+        // Firebase Config Asli Sesuai Permintaan
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2l13PtnNV7iL6QbvCYgQK8Zb3wOYlvEo",
+            authDomain: "akujuara.firebaseapp.com",
+            projectId: "akujuara",
+            storageBucket: "akujuara.firebasestorage.app",
+            messagingSenderId: "655907226533",
+            appId: "1:655907226533:web:a28475b81e095bcb7a5e4c",
+            measurementId: "G-D8ZZRGW24D"
+        };
+
+        try {
+            if (!firebase.apps.length) app = firebase.initializeApp(firebaseConfig);
+            else app = firebase.app();
+            db = firebase.firestore();
+            auth = firebase.auth();
+        } catch (e) {
+            console.warn("Firebase Init Error (Berjalan di mode Lokal/Offline)", e);
+        }
+
+        // --- GLOBAL STATE ---
+        window.appState = {
+            roomId: '',
+            isFormMode: false,
+            entries: [], // Format: { id: "xx", data: { name: "A", ...} }
+            winners: [],
+            activeFilter: 'Semua',
+            isSpinning: false,
+            currentRotation: 0,
+            autoEliminate: false,
+            hasSpun: false,
+            pendingRewardAction: null,
+            formConfig: {
+                title: 'Formulir Pendaftaran',
+                subtitle: 'Silakan isi data dengan lengkap dan benar.',
+                fields: [
+                    { id: 'name', label: 'Nama Lengkap', active: true, fixed: true, required: true },
+                    { id: 'cat', label: 'Divisi / Kategori', active: true, fixed: false, required: false },
+                    { id: 'phone', label: 'No Handphone', active: true, fixed: false, required: false }
+                ]
+            }
+        };
+
+        const canvas = document.getElementById('wheel-canvas');
+        const ctx = canvas.getContext('2d');
+        let colorCache = []; 
+        let resizeTimer;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let guestCode = urlParams.get('r');
+        const isAdmin = urlParams.get('admin') === '1';
+
+        // --- UTILS & MODALS ---
+        const getLocalKey = () => `akujuara_data_${window.appState.roomId}`;
+        const getConfigKey = () => `akujuara_config_${window.appState.roomId}`;
+        const getWinnerKey = () => `akujuara_winners_${window.appState.roomId}`;
+        const getLocalLockKey = () => `akujuara_lock_${window.appState.roomId}`;
+        const generateColor = (idx, total) => `hsl(${(idx * 360) / total}, 75%, 55%)`;
+
+        function showCustomAlert(title, message) {
+            document.getElementById('custom-alert-title').innerText = title;
+            document.getElementById('custom-alert-message').innerText = message;
+            document.getElementById('custom-alert').classList.remove('hide');
+        }
+        function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hide'); }
+
+        // --- ROOM MANAGEMENT ---
+        function checkAndCleanupRooms() {
+            const history = JSON.parse(localStorage.getItem('akujuara_rooms') || '[]');
+            const now = Date.now();
+            const validHistory = history.filter(r => {
+                const ts = localStorage.getItem(`akujuara_ts_${r.id}`) || 0;
+                // Simpan data hingga 72 Jam
+                if (now - ts > 72 * 60 * 60 * 1000) { 
+                    localStorage.removeItem(`akujuara_data_${r.id}`);
+                    localStorage.removeItem(`akujuara_config_${r.id}`);
+                    localStorage.removeItem(`akujuara_winners_${r.id}`);
+                    localStorage.removeItem(`akujuara_lock_${r.id}`);
+                    localStorage.removeItem(`akujuara_ts_${r.id}`);
+                    return false;
+                }
+                return true;
+            });
+            if(history.length !== validHistory.length) localStorage.setItem('akujuara_rooms', JSON.stringify(validHistory));
+        }
+
+        function saveRoomToHistory(roomId) {
+            let history = JSON.parse(localStorage.getItem('akujuara_rooms') || '[]');
+            if (!history.find(h => h.id === roomId)) {
+                history.unshift({ id: roomId, date: new Date().toLocaleDateString('id-ID') });
+                localStorage.setItem('akujuara_rooms', JSON.stringify(history));
+            }
+            localStorage.setItem(`akujuara_ts_${roomId}`, Date.now()); // Update timestamp
+        }
+
+        function pushUrlParams(roomId) {
+            try {
+                if(!window.location.origin.startsWith('file:') && !window.location.origin.startsWith('blob:')) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('r', roomId);
+                    history.pushState({}, '', url);
+                }
+            } catch(e) {}
+        }
+
+        // --- LOGIN LOGIC (Diperbaiki 100%) ---
+        function handleEmailLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+            const btn = document.getElementById('btn-email-login');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+            
+            if (!auth) return fallbackProceed();
+
+            // Coba Login Terlebih Dahulu
+            auth.signInWithEmailAndPassword(email, pass).then(() => {
+                fallbackProceed();
+            }).catch(error => {
+                // Jika error karena User Tidak Ada, Coba Daftarkan
+                if(error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-login-credentials') {
+                    
+                    auth.createUserWithEmailAndPassword(email, pass).then(() => {
+                        fallbackProceed(); // Berhasil Daftar & Masuk
+                    }).catch(err => {
+                        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk / Daftar';
+                        if (err.code === 'auth/email-already-in-use') {
+                            showCustomAlert('Gagal', 'Email sudah terdaftar, tetapi password yang Anda masukkan SALAH.');
+                        } else {
+                            showCustomAlert('Gagal Daftar', err.message);
+                        }
+                    });
+
+                } else {
+                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk / Daftar';
+                    showCustomAlert('Gagal', error.message);
+                }
+            });
+        }
+
+        function loginAsGuest() {
+            if (auth) {
+                auth.signInAnonymously().then(() => fallbackProceed())
+                .catch(e => fallbackProceed()); // Paksa masuk walau offline
+            } else fallbackProceed();
+        }
+
+        function fallbackProceed() {
+            sessionStorage.setItem('host_mode', 'true');
+            document.getElementById('portal-view').classList.add('hide');
+            checkAndCleanupRooms();
+            
+            if (isAdmin) showCustomAlert('INFO ADMIN', 'DILARANG MENGGANTI ID IKLAN DARI WEB. Ganti langsung di Android Studio (MainActivity.java) agar aplikasi tidak di-Banned Google.');
+
+            const history = JSON.parse(localStorage.getItem('akujuara_rooms') || '[]');
+            if(!guestCode) {
+                if (history.length > 0) guestCode = history[0].id; // Load terakhir
+                else guestCode = Math.random().toString(36).substring(2, 6).toUpperCase(); // Buat baru
+            }
+            
+            pushUrlParams(guestCode);
+            setupAppView(); 
+        }
+
+        // --- APP INITIALIZATION ---
+        function setupAppView() {
+            window.appState.roomId = guestCode;
+            document.getElementById('app-view').classList.remove('hide');
+            document.getElementById('header-room-id').innerText = `Room: ${guestCode}`;
+            saveRoomToHistory(guestCode);
+
+            window.appState.entries = [];
+            colorCache = [];
+            
+            const savedConfig = localStorage.getItem(getConfigKey());
+            if (savedConfig) {
+                try { window.appState.formConfig = JSON.parse(savedConfig); } catch(e){}
+            } else {
+                // Default Config
+                window.appState.formConfig = { 
+                    title: 'Formulir Pendaftaran', subtitle: 'Silakan isi data dengan lengkap dan benar.', 
+                    fields: [ 
+                        { id: 'name', label: 'Nama Lengkap', active: true, fixed: true, required: true }, 
+                        { id: 'cat', label: 'Divisi / Kategori', active: true, fixed: false, required: false }, 
+                        { id: 'phone', label: 'No Handphone', active: true, fixed: false, required: false } 
+                    ] 
+                };
+                localStorage.setItem(getConfigKey(), JSON.stringify(window.appState.formConfig));
+            }
+            
+            window.appState.hasSpun = localStorage.getItem(getLocalLockKey()) === 'true';
+            
+            loadWinners();
+            renderEditorFields();
+            updateFormPreview();
+            
+            initDataSync(); 
+            
+            switchView('wheel');
+            setTimeout(setupCanvas, 150); 
+            
+            // Anti Blink Scroll Event (Hanya setup ulang canvas jika ukuran layar BERUBAH drastis)
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(setupCanvas, 250);
+            });
+        }
+
+        // --- DATA SYNC (OPTIMISTIC / INSTAN UI) ---
+        function initDataSync() {
+            const localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]');
+            updateEntries(localData); // Tampilkan instan
+
+            if(db) {
+                db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').onSnapshot(snapshot => {
+                    const remoteData = [];
+                    snapshot.forEach(doc => {
+                        // Pastikan format objeknya selalu memiliki struktur { id: string, data: object }
+                        const itemData = doc.data();
+                        // Jika struktur cloud sudah terbungkus 'data', ambil, jika tidak bungkus.
+                        remoteData.push({ id: doc.id, data: itemData.data ? itemData.data : itemData }); 
+                    });
+                    localStorage.setItem(getLocalKey(), JSON.stringify(remoteData));
+                    updateEntries(remoteData);
+                }, error => {
+                    console.warn("Firestore offline. Roda tetap jalan pakai LocalStorage.");
+                });
+            }
+        }
+
+        function updateEntries(data) {
+            if(window.appState.isSpinning) return; 
+            window.appState.entries = data || [];
+            renderTable();
+            renderCategories();
+            drawWheel();
+        }
+
+        function hybridAddEntry(dataInput) {
+            const newId = 'entry_' + Date.now().toString(36);
+            // Format wajib: { id: string, data: object }
+            const payload = { id: newId, data: dataInput };
+            
+            // 1. Instan Update UI (0 milidetik - Anti Ngadat)
+            let localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]');
+            localData.push(payload);
+            localStorage.setItem(getLocalKey(), JSON.stringify(localData));
+            updateEntries(localData); 
+            
+            // 2. Background push Firebase
+            if (db) db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(newId).set(dataInput).catch(e=>console.warn(e));
+            
+            // Notifikasi Pendaftar Baru (Untuk Host)
+            if (window.appState.isFormMode === false && dataInput[window.appState.formConfig.fields[0].id]) {
+                showFloatingNotif(dataInput[window.appState.formConfig.fields[0].id]);
+            }
+        }
+
+        function hybridDeleteEntry(id) {
+            // Instan Delete
+            let localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]');
+            localData = localData.filter(e => e.id !== id);
+            localStorage.setItem(getLocalKey(), JSON.stringify(localData));
+            updateEntries(localData);
+
+            if (db) db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(id).delete().catch(e=>console.warn(e));
+        }
+
+        function clearAllData() {
+            localStorage.setItem(getLocalKey(), '[]');
+            updateEntries([]);
+            if (db) {
+                db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').get().then(snap => {
+                    const batch = db.batch();
+                    snap.docs.forEach(d => batch.delete(d.ref));
+                    batch.commit();
+                }).catch(e=>console.warn(e));
+            }
+        }
+
+        // --- WHEEL & CANVAS (Mulus & Anti Blank) ---
+        function setupCanvas() {
+            const container = document.getElementById('wheel-container');
+            if(!container) return;
+            const size = Math.max(Math.min(container.clientWidth, 400), 300);
+            canvas.width = size * 2; 
+            canvas.height = size * 2;
+            canvas.style.width = size + 'px';
+            canvas.style.height = size + 'px';
+            drawWheel();
+        }
+
+        function getFilteredEntries() {
+            if (window.appState.activeFilter === 'Semua') return window.appState.entries;
+            const catField = window.appState.formConfig.fields.find(f => f.id === 'cat');
+            if(!catField || !catField.active) return window.appState.entries; 
+            
+            const catId = catField.id;
+            return window.appState.entries.filter(e => e.data && e.data[catId] === window.appState.activeFilter);
+        }
+
+        function drawWheel() {
+            const entries = getFilteredEntries();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const radius = cx - 10;
+            
+            const countEl = document.getElementById('participant-count');
+            if(countEl) countEl.innerText = `${entries.length} Peserta siap diputar`;
+
+            if (entries.length === 0) {
+                ctx.beginPath(); ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fill();
+                ctx.fillStyle = '#334155'; ctx.font = 'bold 30px "Plus Jakarta Sans"';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText('Data Kosong', cx, cy - 60);
+                document.getElementById('wheel-pointer').style.backgroundColor = '#ef4444';
+                return;
+            }
+
+            const arc = (2 * Math.PI) / entries.length;
+            if (colorCache.length !== entries.length) {
+                colorCache = entries.map((_, i) => generateColor(i, entries.length));
+            }
+
+            for (let i = 0; i < entries.length; i++) {
+                const angle = window.appState.currentRotation + i * arc;
+                ctx.beginPath();
+                ctx.fillStyle = colorCache[i];
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, radius, angle, angle + arc);
+                ctx.lineTo(cx, cy); ctx.fill();
+                
+                ctx.save();
+                ctx.translate(cx + Math.cos(angle + arc / 2) * (radius * 0.55), cy + Math.sin(angle + arc / 2) * (radius * 0.55));
+                ctx.rotate(angle + arc / 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${Math.max(14, 35 - entries.length)}px "Plus Jakarta Sans"`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 4;
+                
+                const nameId = window.appState.formConfig.fields[0].id; // Selalu kolom ke-1
+                let text = (entries[i].data && entries[i].data[nameId]) ? entries[i].data[nameId] : '?';
+                if(text.length > 14) text = text.substring(0, 14) + '..';
+                ctx.fillText(text, 0, 0);
+                ctx.restore();
+            }
+
+            // Ganti warna jarum
+            const pointerAngle = (Math.PI * 1.5 - window.appState.currentRotation + (Math.PI * 2)) % (Math.PI * 2);
+            const sliceIndex = Math.floor(pointerAngle / arc) % entries.length;
+            if(colorCache[sliceIndex]) {
+                document.getElementById('wheel-pointer').style.backgroundColor = colorCache[sliceIndex];
+            }
+        }
+
+        function spinWheel() {
+            const currentEntries = getFilteredEntries();
+            if(currentEntries.length === 0) return showCustomAlert("Info", "Data peserta masih kosong!");
+            if(window.appState.isSpinning) return;
+            
+            window.appState.isSpinning = true;
+
+            if (!window.appState.hasSpun) {
+                window.appState.hasSpun = true;
+                localStorage.setItem(getLocalLockKey(), 'true');
+                renderEditorFields(); 
+            }
+
+            const spinTimeTotal = Math.random() * 2000 + 4000; 
+            let spinTime = 0, startAngle = window.appState.currentRotation;
+            let targetAngle = startAngle + (Math.PI * 2 * (8 + Math.random() * 10)); 
+
+            let startTimestamp = null;
+            function animateSpin(timestamp) {
+                if(!startTimestamp) startTimestamp = timestamp;
+                spinTime = timestamp - startTimestamp;
+                
+                if(spinTime >= spinTimeTotal) {
+                    window.appState.currentRotation = targetAngle % (Math.PI * 2);
+                    window.appState.isSpinning = false;
+                    drawWheel(); // Gambar posisi berhenti final
+                    
+                    // ANTI-BLANK: Beri browser napas 150ms sebelum rendering confetti & pop-up modal
+                    setTimeout(() => {
+                        const arc = (2 * Math.PI) / currentEntries.length;
+                        const pointerAngle = (Math.PI * 1.5 - window.appState.currentRotation + (Math.PI * 2)) % (Math.PI * 2);
+                        const wIndex = Math.floor(pointerAngle / arc) % currentEntries.length;
+                        const winner = currentEntries[wIndex];
+                        
+                        if(winner && winner.data) {
+                            try { confetti({ particleCount: 250, spread: 100, origin: { y: 0.6 }, zIndex: 500 }); } catch(e){}
+                            
+                            const nameId = window.appState.formConfig.fields[0].id;
+                            const winnerName = winner.data[nameId] || 'Tanpa Nama';
+                            
+                            document.getElementById('winner-name').innerText = winnerName;
+                            document.getElementById('winner-modal').classList.remove('hide');
+                            
+                            saveWinner(winnerName); 
+                            if (window.appState.autoEliminate) hybridDeleteEntry(winner.id);
+                        }
+                    }, 150);
+                    return;
+                }
+                
+                // Ease Out Cubic
+                let t = spinTime / spinTimeTotal; t--;
+                window.appState.currentRotation = (targetAngle - startAngle) * (t*t*t + 1) + startAngle;
+                drawWheel(); 
+                requestAnimationFrame(animateSpin);
+            }
+            requestAnimationFrame(animateSpin);
+        }
+
+        function closeWinnerModal() { document.getElementById('winner-modal').classList.add('hide'); }
+
+        // --- FILTER KATEGORI (Hanya memantau id 'cat') ---
+        function renderCategories() {
+            const container = document.getElementById('category-filter-container');
+            const chips = document.getElementById('category-chips');
+            const catField = window.appState.formConfig.fields.find(f => f.id === 'cat');
+            
+            if(catField && catField.active) {
+                container.classList.remove('hide');
+                document.getElementById('category-filter-label').innerText = catField.label; 
+                const catId = catField.id;
+                
+                const rawCats = window.appState.entries
+                                .filter(e => e.data && e.data[catId] && e.data[catId].trim() !== '')
+                                .map(e => e.data[catId].trim());
+                
+                const cats = ['Semua', ...new Set(rawCats)];
+                
+                if(!cats.includes(window.appState.activeFilter)) window.appState.activeFilter = 'Semua';
+                
+                chips.innerHTML = cats.map(c => {
+                    const count = c === 'Semua' ? window.appState.entries.length : window.appState.entries.filter(e => e.data && e.data[catId] && e.data[catId].trim() === c).length;
+                    const isActive = c === window.appState.activeFilter;
+                    return `<button onclick="setFilter('${c}')" class="whitespace-nowrap px-4 py-1.5 rounded-full text-[10px] font-bold transition-colors border ${isActive ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white/70 text-slate-600 border-white/50 hover:bg-white'}">${c} <span class="ml-1 opacity-70">(${count})</span></button>`;
+                }).join('');
+            } else {
+                window.appState.activeFilter = 'Semua';
+                container.classList.add('hide');
+            }
+        }
+
+        function setFilter(cat) { window.appState.activeFilter = cat; updateEntries(window.appState.entries); }
+        function toggleElimination(val) { window.appState.autoEliminate = val; }
+
+        // --- TABEL DATA ---
+        function renderTable() {
+            const thead = document.getElementById('table-head');
+            const tbody = document.getElementById('table-body');
+            const fields = window.appState.formConfig.fields.filter(f => f.active);
+            
+            if (window.appState.entries.length === 0) {
+                document.getElementById('empty-state').classList.remove('hide');
+                thead.innerHTML = ''; tbody.innerHTML = ''; return;
+            }
+            
+            document.getElementById('empty-state').classList.add('hide');
+            thead.innerHTML = `<tr><th class="py-3 px-3 w-10 text-center">No</th>${fields.map(f => `<th class="py-3 px-3 uppercase tracking-wider">${f.label}</th>`).join('')}<th class="py-3 px-3 w-12 text-center"><i class="fa-solid fa-gear"></i></th></tr>`;
+            
+            tbody.innerHTML = window.appState.entries.map((e, i) => `
+                <tr class="hover:bg-blue-50/50 transition-colors">
+                    <td class="py-3 px-3 text-center font-bold text-slate-500">${i+1}</td>
+                    ${fields.map(f => `<td class="py-3 px-3 font-bold text-slate-800 whitespace-nowrap">${(e.data && e.data[f.id]) ? e.data[f.id] : '-'}</td>`).join('')}
+                    <td class="py-3 px-3 text-center">
+                        <button type="button" onclick="hybridDeleteEntry('${e.id}')" class="bg-red-50 hover:bg-red-500 text-red-500 hover:text-white w-7 h-7 rounded-lg flex items-center justify-center transition-all mx-auto shadow-sm" title="Hapus"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function showFloatingNotif(name) {
+            const container = document.getElementById('view-wheel');
+            if(!container) return;
+            const notif = document.createElement('div');
+            notif.className = 'floating-notif';
+            const colors = ['#2563eb', '#059669', '#d97706', '#7c3aed', '#db2777'];
+            notif.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            const x = Math.random() * 60 + 20; 
+            const y = Math.random() * 40 + 30; 
+            notif.style.left = `${x}%`;
+            notif.style.top = `${y}%`;
+            
+            let displayName = name.substring(0, 4) + '***';
+            notif.innerHTML = `<i class="fa-solid fa-bell mr-1"></i> ${displayName} mendaftar!`;
+            
+            container.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+
+        function loadWinners() {
+            const list = document.getElementById('winner-history-list');
+            let winners = JSON.parse(localStorage.getItem(getWinnerKey()) || '[]');
+            
+            const now = Date.now();
+            winners = winners.filter(w => (now - w.time) < 24 * 60 * 60 * 1000); 
+            localStorage.setItem(getWinnerKey(), JSON.stringify(winners));
+            window.appState.winners = winners;
+            
+            if(winners.length === 0) list.innerHTML = '<p class="text-xs text-slate-500 text-center italic font-medium py-3">Belum ada pemenang</p>';
+            else {
+                list.innerHTML = winners.map((w, i) => `
+                    <div class="flex items-center gap-3 p-2.5 bg-white/60 border border-white/80 rounded-xl mb-1.5 shadow-sm">
+                        <span class="text-[10px] font-black text-amber-500 w-4">${i+1}.</span>
+                        <div class="font-extrabold text-xs text-slate-800 truncate flex-1 tracking-wide">${w.name}</div>
+                        <span class="text-[9px] text-slate-400 font-mono bg-slate-100 px-1.5 py-0.5 rounded">${new Date(w.time).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function saveWinner(name) {
+            window.appState.winners.unshift({ name: name, time: Date.now() });
+            if(window.appState.winners.length > 10) window.appState.winners.pop();
+            localStorage.setItem(getWinnerKey(), JSON.stringify(window.appState.winners));
+            loadWinners();
+        }
+
+        // --- FORM BUILDER ---
+        function renderEditorFields() {
+            const c = document.getElementById('editor-fields-container');
+            const fields = window.appState.formConfig.fields;
+            document.getElementById('field-count-badge').innerText = `${fields.length}/10 Kolom`;
+            
+            if(window.appState.hasSpun) {
+                document.getElementById('form-lock-overlay').classList.remove('hide');
+                document.getElementById('btn-add-field').style.display = 'none';
+            } else {
+                document.getElementById('form-lock-overlay').classList.add('hide');
+                document.getElementById('btn-add-field').style.display = 'flex';
+            }
+
+            c.innerHTML = fields.map((f, i) => `
+                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2 rounded-xl">
+                    <label class="relative inline-flex items-center cursor-pointer ml-1">
+                        <input type="checkbox" class="sr-only peer" ${f.active ? 'checked' : ''} ${f.fixed ? 'disabled' : ''} onchange="updateFieldActive(${i}, this.checked)">
+                        <div class="w-8 h-4 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-blue-500 ${f.fixed ? 'opacity-50 cursor-not-allowed' : ''}"></div>
+                    </label>
+                    <input type="text" value="${f.label}" ${f.fixed ? 'readonly' : ''} onchange="updateFieldLabel(${i}, this.value)" class="flex-1 bg-white border border-slate-200 text-xs font-bold text-slate-700 outline-none px-3 focus:border-blue-300 rounded-lg py-1.5 transition-all shadow-sm" placeholder="Nama Kolom">
+                    ${!f.fixed ? `<button type="button" onclick="deleteField(${i})" class="bg-red-50 text-red-400 hover:bg-red-500 hover:text-white w-7 h-7 rounded-lg transition-colors flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>` : '<div class="w-7"></div>'}
+                </div>
+            `).join('');
+            
+            const manualInputs = document.getElementById('manual-inputs-container');
+            if(manualInputs) {
+                manualInputs.innerHTML = fields.filter(f=>f.active).map(f => `<input type="text" id="manual_${f.id}" placeholder="${f.label}" class="solid-input w-full px-4 py-3 text-xs focus:ring-4 focus:ring-blue-100 outline-none shadow-sm" ${f.required?'required':''}>`).join('');
+            }
+        }
+
+        function updateFieldActive(idx, val) { window.appState.formConfig.fields[idx].active = val; updateFormPreview(); }
+        function updateFieldLabel(idx, val) { window.appState.formConfig.fields[idx].label = val; updateFormPreview(); }
+        function deleteField(idx) { window.appState.formConfig.fields.splice(idx, 1); renderEditorFields(); updateFormPreview(); }
+
+        function saveFormConfig() {
+            window.appState.formConfig.title = document.getElementById('config-title').value || 'Formulir Pendaftaran';
+            window.appState.formConfig.subtitle = document.getElementById('config-subtitle').value || '';
+            localStorage.setItem(getConfigKey(), JSON.stringify(window.appState.formConfig));
+            
+            renderEditorFields(); 
+            updateEntries(window.appState.entries); // Re-index filter kategori
+            showCustomAlert('Berhasil', 'Pengaturan form telah disimpan.');
+        }
+
+        function updateFormPreview() {
+            const title = document.getElementById('config-title').value || window.appState.formConfig.title;
+            const subtitle = document.getElementById('config-subtitle').value || window.appState.formConfig.subtitle;
+            const fields = window.appState.formConfig.fields.filter(f => f.active);
+
+            document.getElementById('config-title').value = title;
+            document.getElementById('config-subtitle').value = subtitle;
+            
+            if(document.getElementById('preview-title')){
+                document.getElementById('preview-title').innerText = title;
+                document.getElementById('preview-subtitle').innerText = subtitle;
+                document.getElementById('preview-fields').innerHTML = fields.map(f => `<div class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-[10px] text-slate-600 font-bold shadow-sm">${f.label}${f.required?' <span class="text-red-500">*</span>':''}</div>`).join('');
+            }
+            
+            if(document.getElementById('public-title')) {
+                document.getElementById('public-title').innerText = title;
+                document.getElementById('public-subtitle').innerText = subtitle;
+                document.getElementById('public-fields-container').innerHTML = fields.map(f => `
+                    <div>
+                        <label class="block text-xs font-extrabold text-slate-700 mb-1.5 ml-1 tracking-wide">${f.label}${f.required?' <span class="text-red-500">*</span>':''}</label>
+                        <input type="text" id="pub_${f.id}" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-4 focus:ring-blue-100 outline-none transition-all shadow-sm font-medium text-slate-800" placeholder="Masukkan ${f.label}" ${f.required?'required':''}>
+                    </div>
+                `).join('');
+            }
+            generateShareLink();
+        }
+
+        function generateShareLink() {
+            let base = window.location.origin.includes('file') ? 'rodajuara.netlify.app' : window.location.host;
+            const link = `https://${base}/?r=${window.appState.roomId}`;
+            const linkEl = document.getElementById('share-link-text');
+            if(linkEl) linkEl.innerText = link;
+        }
+
+        function copyShareLink() {
+            const link = document.getElementById('share-link-text').innerText;
+            navigator.clipboard.writeText(link).then(() => showCustomAlert('Berhasil', 'Link disalin ke Clipboard!')).catch(() => showCustomAlert('Gagal', 'Sistem operasi menolak copy otomatis.'));
+        }
+
+        // --- SUBMIT FORM ---
+        function submitForm(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengirim...'; btn.disabled = true;
+
+            const fields = window.appState.formConfig.fields.filter(f => f.active);
+            const data = {};
+            fields.forEach(f => { data[f.id] = document.getElementById(`pub_${f.id}`).value; });
+
+            hybridAddEntry(data);
+            
+            btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Berhasil Terkirim!';
+            btn.classList.replace('bg-blue-600', 'bg-emerald-500');
+            showCustomAlert('Berhasil!', 'Data Anda telah masuk ke dalam roda undian.');
+            e.target.reset();
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Lagi';
+                btn.classList.replace('bg-emerald-500', 'bg-blue-600');
+                btn.disabled = false;
+            }, 2500);
+        }
+
+        function addManualEntry(e) {
+            e.preventDefault();
+            const fields = window.appState.formConfig.fields.filter(f => f.active);
+            const data = {};
+            fields.forEach(f => {
+                const el = document.getElementById(`manual_${f.id}`);
+                if(el) data[f.id] = el.value; 
+            });
+            hybridAddEntry(data);
+            e.target.reset();
+        }
+
+        // --- UI SWITCHER ---
+        function switchView(viewName) {
+            document.querySelectorAll('section[id^="view-"]').forEach(el => el.classList.add('hide'));
+            document.getElementById('view-' + viewName).classList.remove('hide');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-white/95', 'text-blue-600');
+                btn.classList.add('text-slate-600', 'hover:bg-white/50');
+                btn.style.boxShadow = 'none';
+            });
+            
+            const activeBtn = document.getElementById('nav-' + viewName);
+            activeBtn.classList.remove('text-slate-600', 'hover:bg-white/50');
+            activeBtn.classList.add('active', 'bg-white/95', 'text-blue-600');
+            activeBtn.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
+
+            if(viewName === 'wheel') setTimeout(setupCanvas, 50);
+        }
+
+        // --- EXPORT IMPORT EXCEL ---
+        function processImport(e) {
+            const file = e.target.files[0]; if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const data = evt.target.result; const workbook = XLSX.read(data, {type: 'binary'});
+                const firstSheetName = workbook.SheetNames[0]; const worksheet = workbook.Sheets[firstSheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet, {header:1});
+                
+                if(json.length < 2) return showCustomAlert('Gagal', 'File kosong atau format Excel salah.');
+                
+                const fields = window.appState.formConfig.fields.filter(f => f.active);
+                let count = 0;
+                
+                json.slice(1).forEach(row => {
+                    if(row.length > 0 && row[0]) {
+                        const entryData = {};
+                        fields.forEach((f, i) => { entryData[f.id] = row[i] ? String(row[i]) : ''; });
+                        hybridAddEntry(entryData); count++;
+                    }
+                });
+                showCustomAlert('Berhasil', `${count} data berhasil diimport!`);
+                e.target.value = ''; 
+            };
+            reader.readAsBinaryString(file);
+        }
+
+        function exportExcel() {
+            if(window.appState.entries.length === 0) return showCustomAlert('Info', 'Data kosong!');
+            const fields = window.appState.formConfig.fields.filter(f => f.active);
+            const data = window.appState.entries.map(e => {
+                const row = {}; fields.forEach(f => row[f.label] = (e.data && e.data[f.id]) ? e.data[f.id] : ''); return row;
+            });
+            const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Pendaftar");
+            XLSX.writeFile(wb, `Data_Roda_${window.appState.roomId}.xlsx`);
+        }
+
+        function exportPDF() {
+            if(window.appState.entries.length === 0) return showCustomAlert('Info', 'Data kosong!');
+            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            const fields = window.appState.formConfig.fields.filter(f => f.active);
+            const tableColumn = ["No", ...fields.map(f => f.label)];
+            const tableRows = window.appState.entries.map((e, i) => [i+1, ...fields.map(f => (e.data && e.data[f.id]) ? e.data[f.id] : '-')]);
+            
+            doc.text(`Data Pendaftar (Room: ${window.appState.roomId})`, 14, 15);
+            doc.autoTable({ startY: 20, head: [tableColumn], body: tableRows, theme: 'striped' });
+            doc.save(`Data_Roda_${window.appState.roomId}.pdf`);
+        }
+
+        // --- ADMOB BRIDGE ---
+        function handleAdmobAction(action) {
+            window.appState.pendingAdAction = action;
+            if (window.AndroidHost && typeof window.AndroidHost.showInterstitialAd === 'function') {
+                window.AndroidHost.showInterstitialAd();
+                // Iklan berjalan di native, JS nunggu
+                setTimeout(executePendingAdAction, 1000);
+            } else executePendingAdAction();
+        }
+
+        function executePendingAdAction() {
+            const act = window.appState.pendingAdAction;
+            if (act === 'import') document.getElementById('import-file').click();
+            else if (act === 'export_excel') exportExcel();
+            else if (act === 'export_pdf') exportPDF();
+        }
+
+        function requestActionWithReward(actionType) {
+            window.appState.pendingRewardAction = actionType;
+            let title = "", desc = "";
+            
+            if (actionType === 'create_room') {
+                const today = new Date().toDateString();
+                const count = parseInt(localStorage.getItem(`akujuara_create_count_${today}`) || '0');
+                if (count < 2) return executePendingRewardAction(); // 2 Room Gratis
+                title = "Batas Harian Tercapai"; desc = "Tonton iklan singkat ini untuk membuka 1 Room tambahan.";
+            } else if (actionType === 'add_field') {
+                if (window.appState.formConfig.fields.length >= 10) return showCustomAlert('Batas', 'Maksimal 10 kolom.');
+                if (window.appState.formConfig.fields.length < 3) return executePendingRewardAction();
+                title = "Buka Kolom Tambahan"; desc = "Tonton iklan singkat ini untuk menambah kolom baru.";
+            } else if (actionType === 'delete_room') {
+                title = "Konfirmasi Hapus Room"; desc = "Tonton iklan singkat ini untuk menyetujui penghapusan room beserta datanya.";
+            }
+            
+            document.getElementById('reward-title').innerText = title;
+            document.getElementById('reward-desc').innerText = desc;
+            document.getElementById('rewarded-ad-modal').classList.remove('hide');
+        }
+
+        function closeRewardedAdModal() { document.getElementById('rewarded-ad-modal').classList.add('hide'); }
+        
+        function confirmWatchRewardedAd() {
+            document.getElementById('rewarded-ad-modal').classList.add('hide');
+            if (window.AndroidHost && typeof window.AndroidHost.showRewardedAd === 'function') {
+                window.AndroidHost.showRewardedAd();
+            } else {
+                setTimeout(() => window._onRewardedSuccess(), 500);
+            }
+        }
+
+        window._onRewardedSuccess = () => executePendingRewardAction();
+
+        function executePendingRewardAction() {
+            const act = window.appState.pendingRewardAction;
+            if (act === 'create_room') {
+                const today = new Date().toDateString();
+                const count = parseInt(localStorage.getItem(`akujuara_create_count_${today}`) || '0');
+                localStorage.setItem(`akujuara_create_count_${today}`, count + 1);
+                
+                const newRoom = Math.random().toString(36).substring(2, 6).toUpperCase();
+                
+                guestCode = newRoom;
+                window.appState.roomId = newRoom;
+                window.appState.entries = [];
+                window.appState.hasSpun = false;
+                window.appState.activeFilter = 'Semua';
+                
+                window.appState.formConfig = { title: 'Formulir Pendaftaran', subtitle: 'Silakan isi data dengan lengkap dan benar.', fields: [ { id: 'name', label: 'Nama Lengkap', active: true, fixed: true, required: true }, { id: 'cat', label: 'Divisi / Kategori', active: true, fixed: false, required: false }, { id: 'phone', label: 'No Handphone', active: true, fixed: false, required: false } ] };
+                
+                localStorage.setItem(getConfigKey(), JSON.stringify(window.appState.formConfig));
+                localStorage.setItem(getLocalLockKey(), 'false');
+                localStorage.setItem(getLocalKey(), '[]');
+                
+                pushUrlParams(newRoom);
+                document.getElementById('header-room-id').innerText = `Room: ${newRoom}`;
+                saveRoomToHistory(newRoom);
+                
+                renderEditorFields();
+                updateFormPreview();
+                initDataSync(); 
+                switchView('wheel');
+                
+            } else if (act === 'add_field') {
+                const fields = window.appState.formConfig.fields;
+                fields.push({ id: 'custom_' + Date.now().toString(36), label: `Kolom ${fields.length + 1}`, active: true, fixed: false, required: false });
+                renderEditorFields(); updateFormPreview();
+            } else if (act === 'delete_room') {
+                const roomId = window.appState.roomToDelete;
+                let history = JSON.parse(localStorage.getItem('akujuara_rooms') || '[]');
+                history = history.filter(r => r.id !== roomId);
+                localStorage.setItem('akujuara_rooms', JSON.stringify(history));
+                
+                localStorage.removeItem(`akujuara_data_${roomId}`);
+                localStorage.removeItem(`akujuara_config_${roomId}`);
+                localStorage.removeItem(`akujuara_winners_${roomId}`);
+                localStorage.removeItem(`akujuara_lock_${roomId}`);
+                localStorage.removeItem(`akujuara_ts_${roomId}`);
+                openHistoryModal();
+            }
+        }
+
+        // --- HISTORY MODAL ---
+        function openHistoryModal() {
+            const list = document.getElementById('history-list');
+            checkAndCleanupRooms();
+            const history = JSON.parse(localStorage.getItem('akujuara_rooms') || '[]');
+            list.innerHTML = '';
+            if(history.length === 0) list.innerHTML = '<p class="text-xs text-slate-500 text-center py-4 font-bold">Belum ada riwayat room.</p>';
+            else {
+                history.forEach(r => {
+                    const isCurrent = r.id === window.appState.roomId;
+                    list.innerHTML += `
+                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border ${isCurrent ? 'border-blue-400 shadow-inner' : 'border-slate-200'} mb-2">
+                            <div>
+                                <span class="font-mono font-black text-slate-800 text-sm">${r.id}</span>
+                                ${isCurrent ? '<span class="text-[9px] bg-blue-600 text-white px-2 py-0.5 rounded ml-2 font-bold shadow-sm uppercase">Aktif</span>' : ''}
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="window.location.href='?r=${r.id}'" class="bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 w-8 h-8 rounded-lg flex items-center justify-center transition-colors shadow-sm"><i class="fa-solid fa-door-open text-xs"></i></button>
+                                <button type="button" onclick="triggerDeleteRoom('${r.id}')" class="bg-red-50 hover:bg-red-500 text-red-500 hover:text-white border border-red-100 hover:border-red-500 w-8 h-8 rounded-lg flex items-center justify-center transition-colors shadow-sm"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('history-modal').classList.remove('hide');
+        }
+
+        function triggerDeleteRoom(roomId) { window.appState.roomToDelete = roomId; requestActionWithReward('delete_room'); }
+        function closeHistoryModal() { document.getElementById('history-modal').classList.add('hide'); }
+
+        // --- INIT ROUTING ---
+        window.onload = () => {
+            const isHost = sessionStorage.getItem('host_mode') === 'true' || isAdmin;
+            
+            if (guestCode && !isHost) {
+                window.appState.isFormMode = true;
+                window.appState.roomId = guestCode;
+                document.getElementById('portal-view').classList.add('hide'); 
+                document.getElementById('form-view').classList.remove('hide');
+                
+                const savedConfig = localStorage.getItem(getConfigKey());
+                try { if (savedConfig) window.appState.formConfig = JSON.parse(savedConfig); } catch(e){}
+                updateFormPreview(); 
+                
+            } else if (isHost) {
+                document.getElementById('portal-view').classList.add('hide');
+                if(!guestCode) {
+                    const history = JSON.parse(localStorage.getItem('akujuara_rooms') || '[]');
+                    if (history.length > 0) guestCode = history[0].id; 
+                    else {
+                        guestCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+                        const today = new Date().toDateString();
+                        const count = parseInt(localStorage.getItem(`akujuara_create_count_${today}`) || '0');
+                        localStorage.setItem(`akujuara_create_count_${today}`, count + 1);
+                    }
+                    pushUrlParams(guestCode);
+                }
+                setupAppView();
+            } else {
+                document.getElementById('portal-view').classList.remove('hide');
+            }
+        };
+    </script>
+</body>
+</html>
