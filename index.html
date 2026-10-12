@@ -97,7 +97,7 @@
             top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 20;
+            z-index: 60; /* raised so header won't cover it */
             width: 36px;
             height: 46px;
             background: #ef4444;
@@ -111,7 +111,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 10;
+            z-index: 60; /* raised so header won't cover it */
             width: 85px;
             height: 85px;
             border-radius: 50%;
@@ -186,6 +186,11 @@
             border-radius: 10px;
         }
 
+        header { position: sticky; top: 0; z-index: 40; } /* keep header in flow and avoid overlap */
+
+        /* Ensure main scroll area can scroll to show winners */
+        #main-scroll-area { max-height: calc(100vh - 88px); overflow-y: auto; }
+
         @media (max-width: 768px) {
             #wheel-container {
                 max-width: 300px;
@@ -199,7 +204,7 @@
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased h-screen flex flex-col overflow-hidden relative">
+<body class="text-slate-800 antialiased h-screen flex flex-col relative">
 
     <!-- ALERT MODAL -->
     <div id="custom-alert" class="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center hide backdrop-blur-sm transition-opacity">
@@ -233,9 +238,9 @@
                     </div>
                     <div>
                         <label class="block text-slate-700 text-[11px] font-bold mb-1 ml-1 uppercase tracking-wider">Password</label>
-                        <input type="password" id="login-password" required class="solid-input w-full focus:ring-4 focus:ring-blue-400/30 outline-none transition-all shadow-inner" placeholder="Masukkan password">
+                        <input type="password" id="login-password" required class="solid-input w-full focus:ring-4 focus:ring-blue-400/30 outline-none transition-all shadow-inner" placeholder="Password">
                     </div>
-                    <button type="submit" id="btn-email-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-2xl shadow-xl transition-transform hover:scale-105 active:scale-95">
+                    <button type="submit" id="btn-email-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-2xl shadow-xl transition-transform">
                         <i class="fa-solid fa-right-to-bracket"></i> Masuk / Daftar
                     </button>
                 </form>
@@ -246,7 +251,7 @@
                     <div class="h-px bg-slate-300 flex-1"></div>
                 </div>
 
-                <button type="button" onclick="loginAsGuest()" class="w-full bg-white hover:bg-slate-50 text-slate-800 font-bold py-4 px-4 rounded-2xl shadow-md transition-transform hover:scale-105 active:scale-95 border border-slate-200">
+                <button type="button" onclick="loginAsGuest()" class="w-full bg-white hover:bg-slate-50 text-slate-800 font-bold py-4 px-4 rounded-2xl shadow-md transition-transform">
                     <i class="fa-solid fa-user-ninja text-blue-600"></i> Masuk sebagai Tamu
                 </button>
             </div>
@@ -257,28 +262,28 @@
     <div id="app-view" class="h-full flex flex-col hide relative">
         
         <!-- Header -->
-        <header class="px-5 py-4 flex justify-between items-center glass-panel !rounded-none !border-x-0 !border-t-0 z-10 flex-shrink-0 bg-white/40">
+        <header class="px-5 py-4 flex justify-between items-center glass-panel !rounded-none !border-x-0 !border-t-0 bg-white/40">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center p-1 bg-white/70 shadow-sm">
                     <i class="fa-solid fa-trophy text-2xl text-yellow-500"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-black text-slate-800 leading-tight tracking-tight stabillo">Aku Juara</h1>
-                    <p id="header-room-id" class="text-[10px] font-bold text-slate-600 font-mono tracking-widest uppercase bg-white/60 inline-block px-2 py-0.5 rounded-md mt-1 border border-slate-200">Room: -</p>
+                    <p id="header-room-id" class="text-[10px] font-bold text-slate-600 font-mono tracking-widest uppercase bg-white/60 inline-block px-2 py-0.5 rounded-md mt-1 border border-slate-200/40"></p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button type="button" onclick="openHistoryModal()" class="glass-panel bg-white/60 text-slate-700 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm">
+                <button type="button" onclick="openHistoryModal()" class="glass-panel bg-white/60 text-slate-700 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center transition-all">
                     <i class="fa-solid fa-clock-rotate-left text-sm"></i>
                 </button>
-                <button type="button" onclick="createNewRoom()" class="bg-blue-600 hover:bg-blue-700 text-white border border-blue-400/50 px-4 py-2.5 rounded-full text-xs font-extrabold transition-transform hover:scale-105 active:scale-95 shadow-lg">
+                <button type="button" onclick="createNewRoom()" class="bg-blue-600 hover:bg-blue-700 text-white border border-blue-400/50 px-4 py-2.5 rounded-full text-xs font-extrabold transition-all">
                     <i class="fa-solid fa-plus text-sm"></i> <span class="hidden sm:inline">Baru</span>
                 </button>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto w-full min-h-0 pb-32" id="main-scroll-area">
+        <main class="flex-1 w-full min-h-0 pb-32" id="main-scroll-area">
             
             <!-- WHEEL VIEW -->
             <section id="view-wheel" class="w-full max-w-4xl mx-auto h-full flex flex-col items-center justify-center pt-6 px-4 relative">
@@ -296,7 +301,7 @@
                 </div>
 
                 <!-- Winners History -->
-                <div class="w-full max-w-md mx-auto mt-2 glass-panel bg-white/40 p-5 mb-10 rounded-2xl">
+                <div class="w-full max-w-md mx-auto mt-2 glass-panel bg-white/40 p-5 mb-10 rounded-2xl overflow-auto" style="max-height:320px;">
                     <h3 class="text-xs font-black text-slate-700 mb-4 flex items-center gap-3 uppercase tracking-wider border-b border-slate-200/50 pb-3">
                         <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center"><i class="fa-solid fa-award"></i></div> Pemenang Terbaru
                     </h3>
@@ -313,19 +318,47 @@
                         <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div> Data Pendaftar
                     </h2>
                     
-                    <div class="flex flex-wrap items-center gap-3">
-                        <button type="button" onclick="document.getElementById('import-file').click()" class="flex-1 lg:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-transform hover:scale-105 active:scale-95 shadow-md">
+                    <div class="flex flex-wrap items-center gap-3 mb-4">
+                        <button type="button" onclick="document.getElementById('import-file').click()" class="flex-1 lg:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs">
                             <i class="fa-solid fa-file-import"></i> Import
                         </button>
-                        <button type="button" onclick="exportToExcel()" class="flex-1 lg:flex-none glass-panel bg-white/80 hover:bg-white text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-sm">
+                        <button type="button" onclick="exportToExcel()" class="flex-1 lg:flex-none glass-panel bg-white/80 hover:bg-white text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs">
                             <i class="fa-solid fa-file-excel text-green-500 text-sm"></i> Excel
                         </button>
-                        <button type="button" onclick="exportToPDF()" class="flex-1 lg:flex-none glass-panel bg-white/80 hover:bg-white text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-sm">
+                        <button type="button" onclick="exportToPDF()" class="flex-1 lg:flex-none glass-panel bg-white/80 hover:bg-white text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs">
                             <i class="fa-solid fa-file-pdf text-red-500 text-sm"></i> PDF
                         </button>
-                        <button type="button" onclick="clearAllData()" class="flex-1 lg:flex-none bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-sm border border-red-200">
+                        <button type="button" onclick="clearAllData()" class="flex-1 lg:flex-none bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-xl font-bold text-xs">
                             <i class="fa-solid fa-trash-can"></i> Bersihkan
                         </button>
+                    </div>
+
+                    <!-- Manual entry form (uses selected form schema) -->
+                    <div id="manual-entry-area" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                        <div class="md:col-span-2">
+                            <div id="manual-form-container" class="glass-panel p-4 rounded-xl bg-white/80">
+                                <h4 class="text-sm font-bold mb-3">Tambah Peserta (Manual)</h4>
+                                <form id="manual-entry-form" onsubmit="addEntryFromForm(event)" class="space-y-3" autocomplete="off">
+                                    <!-- JS generated inputs here -->
+                                    <div id="manual-form-fields" class="space-y-2"></div>
+                                    <div class="flex gap-2">
+                                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold text-sm" type="submit">Tambah</button>
+                                        <button type="button" onclick="resetManualForm()" class="bg-white border px-4 py-2 rounded-xl">Reset</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="glass-panel p-4 rounded-xl bg-white/80">
+                                <h4 class="text-sm font-bold mb-3">Shortlink Room</h4>
+                                <div class="flex items-center gap-2">
+                                    <input id="shortlink-input" class="solid-input flex-1" readonly>
+                                    <button class="bg-blue-600 text-white px-3 py-2 rounded-xl" onclick="copyShortlink()">Salin</button>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2">Shortlink singkat sesuai kode room. Bagikan untuk peserta.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -347,15 +380,34 @@
                     </div>
                 </div>
             </section>
+
+            <!-- FORMS VIEW -->
+            <section id="view-forms" class="w-full max-w-6xl mx-auto hide pt-6 px-4">
+                <div class="glass-panel bg-white/50 p-5 mb-6 shadow-sm rounded-2xl">
+                    <h2 class="text-lg font-black text-slate-800 flex items-center gap-3 stabillo mb-4">
+                        <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-list-check"></i></div> Form Kustom
+                    </h2>
+
+                    <div class="flex items-center gap-3 mb-4">
+                        <button onclick="addEmptyForm()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-plus"></i> Buat Form Baru</button>
+                        <div class="text-xs text-slate-500">Maksimal 7 formulir. Pilih salah satu untuk digunakan di halaman Data.</div>
+                    </div>
+
+                    <div id="forms-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                </div>
+            </section>
         </main>
 
         <!-- Bottom Navigation -->
         <nav id="bottom-navbar" class="fixed left-1/2 -translate-x-1/2 glass-nav flex items-center justify-between z-50 transition-transform rounded-full shadow-lg">
-            <button type="button" onclick="switchView('wheel')" id="nav-wheel" class="nav-btn active flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center gap-2">
+            <button type="button" onclick="switchView('wheel')" id="nav-wheel" class="nav-btn active flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center">
                 <i class="fa-solid fa-circle-notch text-lg"></i> <span class="hidden sm:inline">Roda</span>
             </button>
-            <button type="button" onclick="switchView('data')" id="nav-data" class="nav-btn text-slate-600 hover:bg-white/50 flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center gap-2">
+            <button type="button" onclick="switchView('data')" id="nav-data" class="nav-btn text-slate-600 hover:bg-white/50 flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center">
                 <i class="fa-solid fa-table-list text-lg"></i> <span class="hidden sm:inline">Data</span>
+            </button>
+            <button type="button" onclick="switchView('forms')" id="nav-form" class="nav-btn text-slate-600 hover:bg-white/50 flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center">
+                <i class="fa-solid fa-list text-lg"></i> <span class="hidden sm:inline">Form</span>
             </button>
         </nav>
     </div>
@@ -395,7 +447,9 @@
             isSpinning: false,
             currentRotation: 0,
             autoEliminate: false,
-            hasSpun: false
+            hasSpun: false,
+            forms: [],
+            selectedForm: 0
         };
 
         const canvas = document.getElementById('wheel-canvas');
@@ -409,6 +463,7 @@
         // === UTILITY FUNCTIONS ===
         const getLocalKey = () => `akujuara_data_${window.appState.roomId}`;
         const getWinnerKey = () => `akujuara_winners_${window.appState.roomId}`;
+        const getFormsKey = () => `akujuara_forms_${window.appState.roomId}`;
         const generateColor = (idx, total) => `hsl(${(idx * 360) / total}, 75%, 55%)`;
 
         function showCustomAlert(title, message) {
@@ -464,10 +519,14 @@
             window.appState.roomId = guestCode;
             document.getElementById('app-view').classList.remove('hide');
             document.getElementById('header-room-id').innerText = `Room: ${guestCode}`;
-            
+            document.getElementById('shortlink-input') && (document.getElementById('shortlink-input').value = `?r=${guestCode}`);
+
+            loadForms();
             loadWinners();
             initDataSync();
             switchView('wheel');
+            renderManualForm();
+            renderFormsView();
             
             setTimeout(() => {
                 if (ctx) setupCanvas();
@@ -683,6 +742,8 @@
             const tbody = document.getElementById('table-body');
             const emptyState = document.getElementById('empty-state');
             
+            const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema();
+
             if (window.appState.entries.length === 0) {
                 emptyState.classList.remove('hide');
                 thead.innerHTML = '';
@@ -691,22 +752,25 @@
             }
             
             emptyState.classList.add('hide');
-            const headers = ['No', 'Nama', 'Divisi', 'Kontak', 'Aksi'];
+            // Build headers from form columns (visible ones)
+            const visibleCols = form.columns.filter(c => c.visible);
+            const headers = ['No', ...visibleCols.map(c => c.label), 'Aksi'];
             thead.innerHTML = `<tr>${headers.map(h => `<th class="py-3 px-3 text-left font-bold">${h}</th>`).join('')}</tr>`;
             
-            tbody.innerHTML = window.appState.entries.map((e, i) => `
+            tbody.innerHTML = window.appState.entries.map((e, i) => {
+                const cells = visibleCols.map(c => `<td class="py-3 px-3 text-slate-700">${(e.data && (e.data[c.key] || '')) || '-'}</td>`).join('');
+                return `
                 <tr class="hover:bg-blue-50/50 transition-colors border-b">
                     <td class="py-3 px-3 text-center font-bold text-slate-500">${i+1}</td>
-                    <td class="py-3 px-3 font-bold text-slate-800">${e.data.name || '-'}</td>
-                    <td class="py-3 px-3 text-slate-700">${e.data.category || '-'}</td>
-                    <td class="py-3 px-3 text-slate-700">${e.data.contact || '-'}</td>
+                    ${cells}
                     <td class="py-3 px-3 text-center">
-                        <button type="button" onclick="hybridDeleteEntry('${e.id}')" class="bg-red-50 hover:bg-red-500 text-red-500 hover:text-white w-7 h-7 rounded-lg flex items-center justify-center transition-colors text-xs">
+                        <button type="button" onclick="hybridDeleteEntry('${e.id}')" class="bg-red-50 hover:bg-red-500 text-red-500 hover:text-white w-7 h-7 rounded-lg flex items-center justify-center">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
         }
 
         // === EXPORT FUNCTIONS ===
@@ -770,7 +834,9 @@
                         hybridAddEntry({
                             name: row.Nama || row.name || '',
                             category: row.Divisi || row.category || '',
-                            contact: row.Kontak || row.contact || ''
+                            contact: row.Kontak || row.contact || '',
+                            email: row.Email || row.email || '',
+                            note: row.Note || row.note || ''
                         });
                     });
 
@@ -813,14 +879,192 @@
             loadWinners();
         }
 
+        // === FORMS (schema for manual entry & columns) ===
+        function defaultFormSchema() {
+            return {
+                name: 'Form Utama',
+                columns: [
+                    { key: 'name', label: 'Nama', visible: true, required: true },
+                    { key: 'category', label: 'Divisi', visible: true, required: false },
+                    { key: 'contact', label: 'Kontak', visible: true, required: false },
+                    { key: 'email', label: 'Email', visible: false, required: false },
+                    { key: 'note', label: 'Catatan', visible: false, required: false }
+                ]
+            };
+        }
+
+        function loadForms() {
+            const raw = localStorage.getItem(getFormsKey());
+            if (raw) {
+                try {
+                    window.appState.forms = JSON.parse(raw);
+                } catch (e) {
+                    window.appState.forms = [defaultFormSchema()];
+                }
+            } else {
+                window.appState.forms = [defaultFormSchema()];
+            }
+            if (!window.appState.forms.length) window.appState.forms = [defaultFormSchema()];
+            window.appState.selectedForm = 0;
+        }
+
+        function saveFormsToStorage() {
+            localStorage.setItem(getFormsKey(), JSON.stringify(window.appState.forms));
+            renderFormsView();
+            renderManualForm();
+            renderTable();
+        }
+
+        function addEmptyForm() {
+            if (window.appState.forms.length >= 7) { showCustomAlert('Batas', 'Maksimal 7 formulir.'); return; }
+            const f = {
+                name: `Form ${window.appState.forms.length + 1}`,
+                columns: [
+                    { key: 'name', label: 'Nama', visible: true, required: true },
+                    { key: 'category', label: 'Divisi', visible: false, required: false },
+                    { key: 'contact', label: 'Kontak', visible: false, required: false }
+                ]
+            };
+            window.appState.forms.push(f);
+            window.appState.selectedForm = window.appState.forms.length - 1;
+            saveFormsToStorage();
+        }
+
+        function deleteForm(idx) {
+            if (!confirm('Hapus formulir ini?')) return;
+            window.appState.forms.splice(idx,1);
+            if (window.appState.selectedForm >= window.appState.forms.length) window.appState.selectedForm = Math.max(0, window.appState.forms.length - 1);
+            saveFormsToStorage();
+        }
+
+        function editFormName(idx) {
+            const name = prompt('Nama formulir:', window.appState.forms[idx].name);
+            if (name !== null) {
+                window.appState.forms[idx].name = name.trim() || window.appState.forms[idx].name;
+                saveFormsToStorage();
+            }
+        }
+
+        function toggleColumnVisibility(formIdx, colKey) {
+            const form = window.appState.forms[formIdx];
+            const col = form.columns.find(c=>c.key===colKey);
+            if (!col) return;
+            if (col.required) return; // cannot toggle name
+            col.visible = !col.visible;
+            saveFormsToStorage();
+        }
+
+        function editColumnLabel(formIdx, colKey) {
+            const form = window.appState.forms[formIdx];
+            const col = form.columns.find(c=>c.key===colKey);
+            if (!col) return;
+            const label = prompt('Label kolom:', col.label);
+            if (label !== null) {
+                col.label = label.trim() || col.label;
+                saveFormsToStorage();
+            }
+        }
+
+        function selectForm(idx) {
+            window.appState.selectedForm = idx;
+            renderManualForm();
+            renderFormsView();
+            renderTable();
+        }
+
+        function renderFormsView() {
+            const container = document.getElementById('forms-list');
+            if (!container) return;
+            container.innerHTML = window.appState.forms.map((f, i) => `
+                <div class="p-3 bg-white/80 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-start gap-2">
+                        <div>
+                            <div class="text-sm font-extrabold text-slate-800">${f.name}</div>
+                            <div class="text-xs text-slate-500 mt-1">${f.columns.filter(c=>c.visible).map(c=>c.label).join(', ') || 'Kosong'}</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="text-xs px-2 py-1 bg-blue-50 rounded" onclick="selectForm(${i})">Pilih</button>
+                            <button class="text-xs px-2 py-1 bg-white border rounded" onclick="editFormName(${i})">Edit</button>
+                            <button class="text-xs px-2 py-1 bg-red-50 rounded text-red-600" onclick="deleteForm(${i})">Hapus</button>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-xs">
+                        <div class="font-bold mb-1">Kelola Kolom</div>
+                        ${f.columns.map(col => `
+                            <div class="flex items-center gap-2 mb-1">
+                                <input type="checkbox" ${col.visible? 'checked': ''} ${col.required? 'disabled': ''} onclick="toggleColumnVisibility(${i}, '${col.key}')" />
+                                <div class="flex-1 text-sm">${col.label} ${col.required? '<span class="text-xs text-amber-500">(wajib)</span>':''}</div>
+                                <button class="text-xs text-slate-500" onclick="editColumnLabel(${i}, '${col.key}')">Ubah Label</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            // show selected highlight
+            Array.from(container.children).forEach((el, idx)=>{
+                if (idx===window.appState.selectedForm) el.classList.add('ring-2','ring-blue-200');
+                else el.classList.remove('ring-2','ring-blue-200');
+            });
+        }
+
+        // === MANUAL ENTRY FORM RENDER & ACTIONS ===
+        function renderManualForm() {
+            const fieldsContainer = document.getElementById('manual-form-fields');
+            const shortInput = document.getElementById('shortlink-input');
+            const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema();
+            if (!fieldsContainer) return;
+
+            // Build inputs based on form columns
+            fieldsContainer.innerHTML = form.columns.map(col => `
+                <div>
+                    <label class="block text-[11px] font-bold mb-1">${col.label}${col.required? ' *':''}</label>
+                    <input name="${col.key}" class="solid-input w-full" ${col.required? 'required':''} placeholder="${col.label}" />
+                </div>
+            `).join('');
+
+            if (shortInput) shortInput.value = `?r=${window.appState.roomId}`;
+        }
+
+        function resetManualForm() {
+            document.getElementById('manual-entry-form').reset();
+        }
+
+        function addEntryFromForm(e) {
+            e.preventDefault();
+            const formEl = document.getElementById('manual-entry-form');
+            const formData = new FormData(formEl);
+            const formSchema = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema();
+            const payload = {};
+            formSchema.columns.forEach(c => {
+                payload[c.key] = (formData.get(c.key) || '').toString().trim();
+            });
+            if (!payload.name) { showCustomAlert('Error', 'Nama wajib diisi'); return; }
+            hybridAddEntry(payload);
+            resetManualForm();
+        }
+
+        // Shortlink copy
+        function copyShortlink() {
+            const short = `?r=${window.appState.roomId}`;
+            navigator.clipboard && navigator.clipboard.writeText(short).then(()=>{
+                showCustomAlert('Disalin', short);
+            }).catch(()=>{
+                const input = document.getElementById('shortlink-input');
+                input && input.select();
+                try { document.execCommand('copy'); showCustomAlert('Disalin', short); } catch(e){ showCustomAlert('Gagal', 'Tidak bisa menyalin'); }
+            });
+        }
+
         // === UI FUNCTIONS ===
         function switchView(view) {
             document.getElementById('view-wheel').classList.add('hide');
             document.getElementById('view-data').classList.add('hide');
+            document.getElementById('view-forms').classList.add('hide');
             document.getElementById(`view-${view}`).classList.remove('hide');
             
             document.getElementById('nav-wheel').classList.remove('active');
             document.getElementById('nav-data').classList.remove('active');
+            document.getElementById('nav-form').classList.remove('active');
             document.getElementById(`nav-${view}`).classList.add('active');
         }
 
@@ -828,6 +1072,7 @@
             guestCode = Math.random().toString(36).substring(2, 8).toUpperCase();
             window.appState.roomId = guestCode;
             document.getElementById('header-room-id').innerText = `Room: ${guestCode}`;
+            document.getElementById('shortlink-input') && (document.getElementById('shortlink-input').value = `?r=${guestCode}`);
             localStorage.setItem(getLocalKey(), '[]');
             updateEntries([]);
         }
