@@ -28,200 +28,132 @@
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             min-height: 100vh;
-            color: #1e293b;
+            color: #0f172a;
             overflow-x: hidden;
         }
 
         .hide { display: none !important; }
         
+        /* Modern clean glass style but less busy */
         .glass-panel { 
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            box-shadow: 0 6px 18px rgba(12, 18, 26, 0.04);
+            border-radius: 16px;
         }
         
         .glass-nav { 
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 1);
+            border: 1px solid rgba(12, 18, 26, 0.06);
+            box-shadow: 0 6px 18px rgba(12, 18, 26, 0.06);
             border-radius: 9999px;
         }
 
         .solid-input {
-            background-color: rgba(255, 255, 255, 0.95) !important;
-            color: #1e293b !important;
-            border: 1px solid rgba(203, 213, 225, 0.8) !important;
-            border-radius: 20px;
+            background-color: #fff !important;
+            color: #0f172a !important;
+            border: 1px solid rgba(12,18,26,0.06) !important;
+            border-radius: 12px;
             padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            transition: box-shadow .12s ease, transform .06s ease;
         }
+        .solid-input:focus{ box-shadow: 0 6px 18px rgba(14, 165, 233, 0.12); outline: none; transform: translateY(-1px); }
 
-        /* Make "stabillo" plain and remove decorative background/shadow so fonts look clean */
+        /* Simplified heading style */
         .stabillo {
             background: transparent !important;
             color: inherit !important;
             padding: 0 !important;
-            border-radius: 0 !important;
             display: inline-block;
-            box-shadow: none !important;
             font-weight: 800;
-        }
-        
-        #wheel-container {
-            position: relative;
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            aspect-ratio: 1/1;
-            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.2));
+            letter-spacing: -0.01em;
         }
 
-        #wheel-canvas {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            display: block;
-        }
-        
-        .pointer {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 60; /* raised so header won't cover it */
-            width: 36px;
-            height: 46px;
-            background: #ef4444;
-            clip-path: polygon(50% 100%, 0 0, 100% 0);
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
-            transition: background-color 0.1s ease;
-        }
+        #wheel-container { position: relative; width: 100%; max-width: 480px; margin: 0 auto; aspect-ratio: 1/1; }
+        #wheel-canvas { width:100%; height:100%; border-radius:50%; display:block; }
 
-        .spin-center-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 60; /* raised so header won't cover it */
-            width: 105px;
-            height: 105px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 1.25rem;
-            color: #1e3a8a;
-            box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.6), 0 10px 20px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-        }
+        .pointer { position:absolute; top:-18px; left:50%; transform:translateX(-50%); z-index:60; width:34px; height:42px; background:#ef4444; clip-path:polygon(50% 100%, 0 0, 100% 0); }
 
-        .spin-title { text-align: center; margin-bottom: 8px; }
-        .spin-title h2 { font-size: 1.5rem; font-weight: 900; }
-        .spin-title p { font-size: 0.9rem; color: rgba(15,23,42,0.7); }
+        .spin-center-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:60; width:96px; height:96px; border-radius:9999px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; color:#0f172a; box-shadow:0 8px 24px rgba(2,6,23,0.06); cursor:pointer; }
 
-        .spin-center-btn:hover { transform: translate(-50%, -50%) scale(1.04); }
-        .spin-center-btn:active { transform: translate(-50%, -50%) scale(0.95); }
+        .spin-title { text-align:center; margin-bottom:8px; }
+        .spin-title h2{ font-size:1.35rem; font-weight:800; }
+        .spin-title p{ font-size:0.9rem; color: rgba(15,23,42,0.6); }
 
-        .floating-notif {
-            position: fixed;
-            padding: 12px 24px;
-            border-radius: 99px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: white;
-            box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.3);
-            z-index: 30;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            animation: floatUp 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            pointer-events: none;
-        }
+        /* Floating notifications */
+        .floating-notif{ position:fixed; left:50%; transform:translateX(-50%); bottom:140px; padding:10px 18px; border-radius:9999px; color:#fff; background:#111827; box-shadow:0 8px 30px rgba(2,6,23,0.2); z-index:99999; }
 
-        @keyframes floatUp { 0% { opacity: 0; transform: translateY(20px) scale(0.8); } 15% { opacity: 1; transform: translateY(0) scale(1.1); } 30% { transform: translateY(-5px) scale(1); } 80% { transform: translateY(-30px); } 100% { opacity: 0; transform: translateY(-50px); } }
+        /* Bottom nav: ensure always tappable */
+        #bottom-navbar{ width:95%; max-width:680px; padding:8px; bottom:18px; z-index:99999; left:50%; transform:translateX(-50%); }
+        .nav-btn{ cursor:pointer; -webkit-tap-highlight-color:transparent; touch-action:manipulation; user-select:none; padding:10px 14px; }
+        .nav-btn.active{ background:#0ea5e9; color:#fff; box-shadow:0 8px 30px rgba(14,165,233,0.12); }
 
-        /* Ensure bottom navbar is always on top and tappable on mobile */
-        #bottom-navbar { width: 95%; max-width: 600px; padding: 8px; bottom: 25px; z-index: 9999; }
+        header{ position:sticky; top:0; z-index:80; }
+        #main-scroll-area{ max-height:calc(100vh - 112px); overflow-y:auto; padding-bottom:120px; }
 
-        .nav-btn { cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; }
-        .nav-btn.active { background-color: rgba(255, 255, 255, 0.95); color: #2563eb; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); }
+        /* FAB share button for mobile: improved placement and accessibility */
+        #fab-share{ position:fixed; right:20px; bottom:110px; z-index:99998; display:none; }
+        #fab-share button{ background:#06b6d4; color:white; border-radius:9999px; width:56px; height:56px; box-shadow:0 12px 28px rgba(6,182,212,0.14); display:flex; align-items:center; justify-content:center; border:none; }
+        #fab-share button:active{ transform:scale(.98); }
+        @media (max-width:768px){ #fab-share{ display:block; } .spin-center-btn{ width:80px; height:80px; } }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        /* Table and forms tweaks for readability */
+        table{ border-collapse:collapse; }
+        th, td{ padding:10px 12px; }
+        thead th{ font-weight:800; font-size:12px; color:#0f172a; }
 
-        header { position: sticky; top: 0; z-index: 40; }
-        #main-scroll-area { max-height: calc(100vh - 96px); overflow-y: auto; }
-
-        /* FAB share button for mobile */
-        #fab-share { position: fixed; right: 16px; bottom: 100px; z-index: 80; display: none; }
-        #fab-share button { background: #06b6d4; color: white; border-radius: 9999px; width: 64px; height: 64px; box-shadow: 0 10px 30px rgba(6,182,212,0.18); display: flex; align-items: center; justify-content: center; }
-
-        @media (max-width: 640px) { #fab-share { display: block; } .spin-center-btn { width: 88px; height: 88px; font-size: 1rem; } }
-
-        @media (max-width: 768px) { #wheel-container { max-width: 340px; } }
     </style>
 </head>
 <body class="text-slate-800 antialiased h-screen flex flex-col relative">
 
     <!-- ALERT MODAL -->
-    <div id="custom-alert" class="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center hide backdrop-blur-sm transition-opacity">
-        <div class="glass-panel bg-white/90 p-6 max-w-sm w-full mx-4 text-center rounded-3xl">
-            <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm">
+    <div id="custom-alert" class="fixed inset-0 bg-black/40 z-[300] flex items-center justify-center hide backdrop-blur-sm transition-opacity">
+        <div class="glass-panel bg-white p-6 max-w-sm w-full mx-4 text-center rounded-2xl">
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
                 <i class="fa-solid fa-circle-info"></i>
             </div>
             <h3 id="custom-alert-title" class="text-lg font-bold text-slate-800 mb-2">Info</h3>
             <p id="custom-alert-message" class="text-slate-600 text-sm mb-4 whitespace-pre-wrap leading-relaxed"></p>
-            <button type="button" onclick="closeCustomAlert()" class="w-full bg-blue-600 text-white hover:bg-blue-700 font-bold py-3 rounded-2xl transition-colors shadow-lg">Mengerti</button>
+            <button type="button" onclick="closeCustomAlert()" class="w-full bg-blue-600 text-white hover:bg-blue-700 font-bold py-2 rounded-lg transition-colors">Mengerti</button>
         </div>
     </div>
 
     <!-- LOGIN PORTAL -->
-    <div id="portal-view" class="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-y-auto bg-black/10 backdrop-blur-sm">
-        <div class="relative w-full max-w-[320px] mx-4 my-auto py-10">
-            <div class="text-center mb-6">
-                <div class="w-28 h-28 bg-white rounded-full shadow-2xl mx-auto mb-4 flex items-center justify-center">
-                    <i class="fa-solid fa-trophy text-4xl text-yellow-500"></i>
+    <div id="portal-view" class="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-y-auto bg-black/8 backdrop-blur-sm">
+        <div class="relative w-full max-w-[360px] mx-4 my-auto py-8">
+            <div class="text-center mb-4">
+                <div class="w-24 h-24 bg-white rounded-full shadow-md mx-auto mb-3 flex items-center justify-center">
+                    <i class="fa-solid fa-trophy text-3xl text-yellow-500"></i>
                 </div>
+                <h1 class="text-2xl font-extrabold stabillo">Aku Juara</h1>
+                <p class="text-slate-500 text-sm">Roda Undian Realtime</p>
             </div>
 
-            <div class="glass-panel px-6 pb-6 pt-4 shadow-2xl text-center bg-white/60 border-t-white/80 rounded-3xl">
-                <h1 class="text-2xl font-extrabold text-slate-800 mb-1 tracking-tight stabillo">Aku Juara</h1>
-                <p class="text-slate-500 text-xs mb-4 font-medium">Roda Undian Realtime</p>
-                
-                <form id="login-form" onsubmit="handleEmailLogin(event)" class="space-y-3 text-left mb-4">
+            <div class="glass-panel px-5 py-4">
+                <form id="login-form" onsubmit="handleEmailLogin(event)" class="space-y-3 text-left">
                     <div>
-                        <label class="block text-slate-700 text-[11px] font-bold mb-1 ml-1 uppercase tracking-wider">Email / Username</label>
-                        <input type="text" id="login-email" required class="solid-input w-full" placeholder="Contoh: user@example.com">
+                        <label class="block text-slate-700 text-[12px] font-bold mb-1">Email / Username</label>
+                        <input type="text" id="login-email" required class="solid-input w-full" placeholder="user@example.com">
                     </div>
                     <div>
-                        <label class="block text-slate-700 text-[11px] font-bold mb-1 ml-1 uppercase tracking-wider">Password</label>
+                        <label class="block text-slate-700 text-[12px] font-bold mb-1">Password</label>
                         <input type="password" id="login-password" required class="solid-input w-full" placeholder="Password">
                     </div>
-                    <button type="submit" id="btn-email-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl shadow-xl transition-transform">
-                        <i class="fa-solid fa-right-to-bracket"></i> Masuk / Daftar
-                    </button>
+                    <button type="submit" id="btn-email-login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg">Masuk / Daftar</button>
                 </form>
 
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="h-px bg-slate-300 flex-1"></div>
-                    <span class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">ATAU</span>
-                    <div class="h-px bg-slate-300 flex-1"></div>
+                <div class="flex items-center gap-3 my-3">
+                    <div class="h-px bg-slate-200 flex-1"></div>
+                    <div class="text-xs text-slate-400">ATAU</div>
+                    <div class="h-px bg-slate-200 flex-1"></div>
                 </div>
 
-                <button type="button" onclick="loginAsGuest()" class="w-full bg-white hover:bg-slate-50 text-slate-800 font-bold py-3 rounded-2xl shadow-md transition-transform">
-                    <i class="fa-solid fa-user-ninja text-blue-600"></i> Masuk sebagai Tamu
-                </button>
+                <button type="button" onclick="loginAsGuest()" class="w-full bg-white text-slate-800 border border-slate-200 py-2 rounded-lg">Masuk sebagai Tamu</button>
             </div>
         </div>
     </div>
@@ -230,31 +162,27 @@
     <div id="app-view" class="h-full flex flex-col hide relative">
         
         <!-- Header -->
-        <header class="px-5 py-3 flex justify-between items-center glass-panel !rounded-none !border-x-0 !border-t-0 bg-white/40">
+        <header class="px-5 py-3 flex justify-between items-center glass-panel">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-full glass-panel flex items-center justify-center p-1 bg-white/70 shadow-sm">
+                <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center shadow-sm">
                     <i class="fa-solid fa-trophy text-2xl text-yellow-500"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-black text-slate-800 leading-tight tracking-tight stabillo">Aku Juara</h1>
-                    <p id="header-room-id" class="text-[10px] font-bold text-slate-600 font-mono tracking-widest uppercase bg-white/60 inline-block px-2 py-0.5 rounded-md mt-1 border border-slate-200/40"></p>
+                    <h1 class="text-lg font-black stabillo">Aku Juara</h1>
+                    <p id="header-room-id" class="text-[11px] font-mono text-slate-600 mt-1">Room: -</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button type="button" onclick="openHistoryModal()" class="glass-panel bg-white/60 text-slate-700 hover:bg-white w-9 h-9 rounded-full flex items-center justify-center transition-all">
-                    <i class="fa-solid fa-clock-rotate-left text-sm"></i>
-                </button>
-                <button type="button" onclick="handleCreateNewRoomRequest()" class="bg-blue-600 hover:bg-blue-700 text-white border border-blue-400/50 px-3 py-2 rounded-full text-xs font-extrabold">
-                    <i class="fa-solid fa-plus text-sm"></i> <span class="hidden sm:inline">Baru</span>
-                </button>
+                <button type="button" onclick="openHistoryModal()" class="bg-white p-2 rounded-lg shadow-sm"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                <button type="button" onclick="handleCreateNewRoomRequest()" class="bg-blue-600 text-white px-3 py-2 rounded-lg">Baru</button>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 w-full min-h-0 pb-32" id="main-scroll-area">
+        <main class="flex-1 w-full min-h-0 pb-28" id="main-scroll-area">
             
             <!-- WHEEL VIEW -->
-            <section id="view-wheel" class="w-full max-w-4xl mx-auto h-full flex flex-col items-center justify-center pt-4 px-4 relative">
+            <section id="view-wheel" class="w-full max-w-4xl mx-auto h-full flex flex-col items-center justify-center pt-6 px-4 relative">
 
                 <div class="spin-title">
                     <h2 id="spin-title-text">Roda Undian</h2>
@@ -264,79 +192,68 @@
                 <div id="wheel-container" class="mb-6">
                     <div id="wheel-pointer" class="pointer"></div>
                     <canvas id="wheel-canvas"></canvas>
-                    <div class="spin-center-btn" onclick="spinWheel()">SPIN</div>
+                    <div class="spin-center-btn" id="spin-btn">SPIN</div>
                 </div>
 
                 <div class="mt-3 mb-6 text-center">
-                    <p id="participant-count" class="text-slate-800 font-black text-sm glass-panel bg-white/60 px-6 py-2.5 rounded-full inline-block shadow-sm border-white/80 stabillo">
-                        0 Peserta siap diputar
-                    </p>
+                    <p id="participant-count" class="text-slate-800 font-bold">0 Peserta siap diputar</p>
                 </div>
 
                 <!-- Winners History -->
-                <div class="w-full max-w-md mx-auto mt-2 glass-panel bg-white/40 p-5 mb-10 rounded-2xl overflow-auto" style="max-height:320px;">
-                    <h3 class="text-xs font-black text-slate-700 mb-4 flex items-center gap-3 uppercase tracking-wider border-b border-slate-200/50 pb-3">
-                        <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center"><i class="fa-solid fa-award"></i></div> Pemenang Terbaru
-                    </h3>
+                <div class="w-full max-w-md mx-auto mt-2 glass-panel p-4 rounded-lg overflow-auto" style="max-height:320px;">
+                    <h3 class="text-xs font-bold text-slate-700 mb-3">Pemenang Terbaru</h3>
                     <div id="winner-history-list" class="space-y-2">
-                        <p class="text-xs text-slate-500 text-center italic font-medium py-3">Belum ada pemenang</p>
+                        <p class="text-xs text-slate-500 text-center italic">Belum ada pemenang</p>
                     </div>
                 </div>
             </section>
 
             <!-- DATA VIEW -->
             <section id="view-data" class="w-full max-w-6xl mx-auto hide pt-6 px-4">
-                <div class="glass-panel bg-white/50 p-5 mb-6 shadow-sm rounded-2xl">
-                    <h2 class="text-lg font-black text-slate-800 flex items-center gap-3 stabillo mb-4">
-                        <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-users"></i></div> Data Pendaftar
-                    </h2>
-                    
+                <div class="glass-panel p-4 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-black">Data Pendaftar</h2>
+                        <div class="text-xs text-slate-500">Atur dan tambahkan peserta</div>
+                    </div>
+
                     <div class="flex flex-wrap items-center gap-3 mb-4">
-                        <button type="button" onclick="document.getElementById('import-file').click()" class="flex-1 lg:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs">
-                            <i class="fa-solid fa-file-import"></i> Import
-                        </button>
-                        <button type="button" onclick="exportToExcel()" class="flex-1 lg:flex-none glass-panel bg-white/80 hover:bg-white text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs">
-                            <i class="fa-solid fa-file-excel text-green-500 text-sm"></i> Excel
-                        </button>
-                        <button type="button" onclick="exportToPDF()" class="flex-1 lg:flex-none glass-panel bg-white/80 hover:bg-white text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs">
-                            <i class="fa-solid fa-file-pdf text-red-500 text-sm"></i> PDF
-                        </button>
-                        <button type="button" onclick="clearAllData()" class="flex-1 lg:flex-none bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-xl font-bold text-xs">
-                            <i class="fa-solid fa-trash-can"></i> Bersihkan
-                        </button>
+                        <button type="button" onclick="document.getElementById('import-file').click()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg">Import</button>
+                        <button type="button" onclick="exportToExcel()" class="bg-white border px-3 py-2 rounded-lg">Excel</button>
+                        <button type="button" onclick="exportToPDF()" class="bg-white border px-3 py-2 rounded-lg">PDF</button>
+                        <button type="button" onclick="clearAllData()" class="bg-red-50 border border-red-100 text-red-600 px-3 py-2 rounded-lg">Bersihkan</button>
                     </div>
 
                     <!-- Manual entry form (uses selected form schema) -->
                     <div id="manual-entry-area" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
                         <div class="md:col-span-2">
-                            <div id="manual-form-container" class="glass-panel p-4 rounded-xl bg-white/80">
+                            <div id="manual-form-container" class="p-4 bg-white rounded-lg">
                                 <div class="flex justify-between items-center mb-3">
                                     <h4 class="text-sm font-bold">Tambah Peserta (Manual)</h4>
-                                    <div class="text-xs text-slate-500">Form aktif: <span id="active-form-name"></span></div>
+                                    <div class="text-xs text-slate-500">Form aktif: <span id="active-form-name">-</span></div>
                                 </div>
                                 <form id="manual-entry-form" onsubmit="addEntryFromForm(event)" class="space-y-3" autocomplete="off">
-                                    <!-- JS generated inputs here -->
                                     <div id="manual-form-fields" class="space-y-2"></div>
+
                                     <div class="flex gap-2">
-                                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold text-sm" type="submit">Tambah</button>
-                                        <button type="button" onclick="resetManualForm()" class="bg-white border px-4 py-2 rounded-xl">Reset</button>
-                                        <button type="button" class="bg-amber-500 text-white px-3 py-2 rounded-xl ml-auto" onclick="handleAddCustomColumnRequest()"><i class="fa-solid fa-plus"></i></button>
+                                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg" type="submit">Tambah</button>
+                                        <button type="button" onclick="resetManualForm()" class="bg-white border px-4 py-2 rounded-lg">Reset</button>
+                                        <button type="button" class="bg-amber-500 text-white px-3 py-2 rounded-lg ml-auto" onclick="handleAddCustomColumnRequest()"><i class="fa-solid fa-plus"></i></button>
                                     </div>
                                 </form>
 
                                 <div class="mt-3">
                                     <div class="text-xs font-bold mb-2">Live Preview</div>
-                                    <div id="manual-live-preview" class="p-3 bg-slate-50 rounded-xl text-sm text-slate-700">Data preview akan tampil di sini.</div>
+                                    <div id="manual-live-preview" class="p-3 bg-slate-50 rounded-lg text-sm text-slate-700">Data preview akan tampil di sini.</div>
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <div class="glass-panel p-4 rounded-xl bg-white/80">
+                            <div class="p-4 bg-white rounded-lg">
                                 <h4 class="text-sm font-bold mb-3">Shortlink Room</h4>
                                 <div class="flex items-center gap-2">
-                                    <input id="shortlink-input" class="solid-input flex-1" readonly>
-                                    <button class="bg-blue-600 text-white px-3 py-2 rounded-xl" onclick="copyShortlink()">Salin</button>
+                                    <input id="shortlink-input" class="solid-input flex-1" readonly aria-readonly="true">
+                                    <button class="bg-blue-600 text-white px-3 py-2 rounded-lg" onclick="copyShortlink()">Salin</button>
                                 </div>
                                 <p class="text-xs text-slate-500 mt-2">Shortlink singkat sesuai kode room. Bagikan untuk peserta.</p>
                             </div>
@@ -344,57 +261,47 @@
                     </div>
                 </div>
 
-                <div class="glass-panel bg-white/70 overflow-hidden w-full mb-10 shadow-sm border-white/80 rounded-2xl">
+                <div class="glass-panel bg-white p-3 rounded-lg overflow-auto">
                     <div class="overflow-x-auto w-full">
-                        <table class="w-full text-left text-[11px] text-slate-700">
-                            <thead class="bg-slate-100/80 border-b border-slate-200 font-black tracking-wider" id="table-head">
-                                <!-- JS -->
-                            </thead>
-                            <tbody class="divide-y divide-slate-200/50" id="table-body">
-                                <!-- JS -->
-                            </tbody>
+                        <table class="w-full text-left text-[13px] text-slate-700">
+                            <thead id="table-head"></thead>
+                            <tbody id="table-body"></tbody>
                         </table>
                     </div>
-                    <div id="empty-state" class="p-12 text-center hide">
-                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300 text-3xl shadow-inner"><i class="fa-solid fa-folder-open"></i></div>
-                        <p class="text-slate-600 font-bold text-sm mb-1">Belum ada data pendaftar.</p>
-                        <p class="text-slate-400 text-xs">Silakan import data dari Excel atau gunakan tombol di atas.</p>
+                    <div id="empty-state" class="p-6 text-center hide">
+                        <p class="text-slate-600 font-bold text-sm">Belum ada data pendaftar.</p>
+                        <p class="text-slate-400 text-xs">Silakan import data dari Excel atau gunakan tombol Tambah.</p>
                     </div>
                 </div>
             </section>
 
             <!-- FORMS VIEW -->
             <section id="view-forms" class="w-full max-w-6xl mx-auto hide pt-6 px-4">
-                <div class="glass-panel bg-white/50 p-5 mb-6 shadow-sm rounded-2xl">
-                    <h2 class="text-lg font-black text-slate-800 flex items-center gap-3 stabillo mb-4">
-                        <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-list-check"></i></div> Form Kustom
-                    </h2>
-
-                    <div class="flex items-center gap-3 mb-4">
-                        <button onclick="handleAddFormRequest()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-plus"></i> Buat Form Baru</button>
-                        <div class="text-xs text-slate-500">Maksimal 7 formulir. Pilih salah satu untuk digunakan di halaman Data.</div>
+                <div class="glass-panel p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-lg font-black">Form Kustom</h2>
+                        <div class="text-xs text-slate-500">Maksimal 7 formulir</div>
                     </div>
 
                     <div id="forms-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+
+                    <div class="mt-4 flex gap-2">
+                        <button onclick="handleAddFormRequest()" class="bg-emerald-500 text-white px-3 py-2 rounded-lg">Buat Form Baru</button>
+                        <div class="text-xs text-slate-500 self-center">(Form tambahan berbayar setelah 3)</div>
+                    </div>
                 </div>
             </section>
         </main>
 
         <!-- Bottom Navigation -->
-        <nav id="bottom-navbar" class="fixed left-1/2 -translate-x-1/2 glass-nav flex items-center justify-between z-50 transition-transform rounded-full shadow-lg">
-            <button type="button" onclick="switchView('wheel')" id="nav-wheel" class="nav-btn active flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center">
-                <i class="fa-solid fa-circle-notch text-lg"></i> <span class="hidden sm:inline">Roda</span>
-            </button>
-            <button type="button" onclick="switchView('data')" id="nav-data" class="nav-btn text-slate-600 hover:bg-white/50 flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center">
-                <i class="fa-solid fa-table-list text-lg"></i> <span class="hidden sm:inline">Data</span>
-            </button>
-            <button type="button" onclick="switchView('forms')" id="nav-form" class="nav-btn text-slate-600 hover:bg-white/50 flex-1 py-3 px-5 mx-1 my-1 rounded-full font-bold text-[11px] transition-all flex justify-center items-center">
-                <i class="fa-solid fa-list text-lg"></i> <span class="hidden sm:inline">Form</span>
-            </button>
+        <nav id="bottom-navbar" class="fixed glass-nav flex items-center justify-between z-50 transition-transform shadow-lg">
+            <button type="button" data-view="wheel" id="nav-wheel" class="nav-btn active"><i class="fa-solid fa-circle-notch"></i> <span class="ml-2 hidden sm:inline">Roda</span></button>
+            <button type="button" data-view="data" id="nav-data" class="nav-btn"><i class="fa-solid fa-table-list"></i> <span class="ml-2 hidden sm:inline">Data</span></button>
+            <button type="button" data-view="forms" id="nav-form" class="nav-btn"><i class="fa-solid fa-list"></i> <span class="ml-2 hidden sm:inline">Form</span></button>
         </nav>
 
         <!-- FAB share for mobile -->
-        <div id="fab-share"><button onclick="copyShortlink()"><i class="fa-solid fa-share-alt"></i></button></div>
+        <div id="fab-share" aria-hidden="false"><button id="fab-btn" aria-label="Bagikan shortlink"><i class="fa-solid fa-share-alt"></i></button></div>
 
     </div>
 
@@ -431,6 +338,7 @@
             entries: [],
             winners: [],
             isSpinning: false,
+            isSwitchingView: false,
             currentRotation: 0,
             autoEliminate: false,
             hasSpun: false,
@@ -447,206 +355,136 @@
         let guestCode = urlParams.get('r');
         const SAWERIA = 'https://saweria.co/jogja';
 
-        // === UTILITY FUNCTIONS ===
+        // === UTILITIES ===
         const getLocalKey = () => `akujuara_data_${window.appState.roomId}`;
         const getWinnerKey = () => `akujuara_winners_${window.appState.roomId}`;
         const getFormsKey = () => `akujuara_forms_${window.appState.roomId}`;
         const getRoomCountKey = () => `akujuara_rooms_created_count`;
         const getUnlockKey = () => `akujuara_unlocked`;
-        const generateColor = (idx, total) => `hsl(${(idx * 360) / total}, 75%, 55%)`;
+        const generateColor = (idx, total) => `hsl(${(idx * 360) / total}, 74%, 55%)`;
 
         function showCustomAlert(title, message) {
+            const el = document.getElementById('custom-alert');
             document.getElementById('custom-alert-title').innerText = title;
             document.getElementById('custom-alert-message').innerText = message;
-            document.getElementById('custom-alert').classList.remove('hide');
+            el.classList.remove('hide');
+            setTimeout(() => { if (!el.classList.contains('hide')) el.classList.add('hide'); }, 3500);
         }
+        function closeCustomAlert(){ document.getElementById('custom-alert').classList.add('hide'); }
 
-        function closeCustomAlert() { document.getElementById('custom-alert').classList.add('hide'); }
-
-        function isUnlocked() { return localStorage.getItem(getUnlockKey()) === '1'; }
-        function setUnlocked() { localStorage.setItem(getUnlockKey(), '1'); }
+        function isUnlocked(){ return localStorage.getItem(getUnlockKey()) === '1'; }
+        function setUnlocked(){ localStorage.setItem(getUnlockKey(), '1'); }
 
         // === LOGIN ===
-        function handleEmailLogin(e) { e.preventDefault(); const email = document.getElementById('login-email').value; const btn = document.getElementById('btn-email-login'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...'; if (!auth) { fallbackProceed(); return; } auth.signInWithEmailAndPassword(email, '').then(() => { fallbackProceed(); }).catch(() => { auth.signInAnonymously().then(() => fallbackProceed()).catch(() => fallbackProceed()); }); }
-        function loginAsGuest() { if (auth) { auth.signInAnonymously().then(() => fallbackProceed()).catch(() => fallbackProceed()); } else { fallbackProceed(); } }
+        function handleEmailLogin(e){ e.preventDefault(); const email = document.getElementById('login-email').value; const btn = document.getElementById('btn-email-login'); btn.disabled = true; btn.innerText = 'Memproses...'; if(!auth){ fallbackProceed(); return; } auth.signInWithEmailAndPassword(email,'').then(()=> fallbackProceed()).catch(()=>{ auth.signInAnonymously().then(()=>fallbackProceed()).catch(()=>fallbackProceed()); }); }
+        function loginAsGuest(){ if(auth){ auth.signInAnonymously().then(()=>fallbackProceed()).catch(()=>fallbackProceed()); } else fallbackProceed(); }
 
-        function fallbackProceed() { document.getElementById('portal-view').classList.add('hide'); if (!guestCode) { guestCode = Math.random().toString(36).substring(2, 8).toUpperCase(); } setupAppView(); }
+        function fallbackProceed(){ document.getElementById('portal-view').classList.add('hide'); if(!guestCode){ guestCode = Math.random().toString(36).substring(2,8).toUpperCase(); } setupAppView(); }
 
         // === APP SETUP ===
-        function setupAppView() {
-            window.appState.roomId = guestCode;
-            document.getElementById('app-view').classList.remove('hide');
-            document.getElementById('header-room-id').innerText = `Room: ${guestCode}`;
-            document.getElementById('shortlink-input') && (document.getElementById('shortlink-input').value = `${location.origin}/${guestCode}`);
-
-            loadForms();
-            loadWinners();
-            initDataSync();
-            switchView('wheel');
-            renderManualForm();
-            renderFormsView();
-
-            setTimeout(() => { if (ctx) setupCanvas(); }, 150);
-            window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (ctx) setupCanvas(); }, 250); });
+        function setupAppView(){ window.appState.roomId = guestCode; document.getElementById('app-view').classList.remove('hide'); document.getElementById('header-room-id').innerText = `Room: ${guestCode}`; const shortInput = document.getElementById('shortlink-input'); if(shortInput) shortInput.value = `${location.origin}/${guestCode}`;
+            loadForms(); loadWinners(); initDataSync(); bindNavButtons(); switchView('wheel'); renderManualForm(); renderFormsView();
+            setTimeout(()=>{ if(ctx) setupCanvas(); },150);
+            window.addEventListener('resize', ()=>{ clearTimeout(resizeTimer); resizeTimer = setTimeout(()=>{ if(ctx) setupCanvas(); }, 250); });
         }
 
         // === DATA SYNC ===
-        function initDataSync() { const localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]'); updateEntries(localData); if (db) { db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').onSnapshot(snapshot => { const remoteData = []; snapshot.forEach(doc => { const itemData = doc.data(); remoteData.push({ id: doc.id, data: itemData.data ? itemData.data : itemData }); }); localStorage.setItem(getLocalKey(), JSON.stringify(remoteData)); updateEntries(remoteData); }, error => { console.warn("Firestore offline", error); }); } }
-        function updateEntries(data) { if (window.appState.isSpinning) return; window.appState.entries = data || []; renderTable(); if (ctx) drawWheel(); }
+        function initDataSync(){ const localData = JSON.parse(localStorage.getItem(getLocalKey())||'[]'); updateEntries(localData); if(db){ try{ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').onSnapshot(snapshot=>{ const remoteData=[]; snapshot.forEach(doc=>{ const item = doc.data(); remoteData.push({ id: doc.id, data: item.data? item.data: item }); }); localStorage.setItem(getLocalKey(), JSON.stringify(remoteData)); updateEntries(remoteData); }, err=>{ console.warn('Firestore offline', err); }); } catch(e){ console.warn(e); } } }
+        function updateEntries(data){ if(window.appState.isSpinning) return; window.appState.entries = data || []; renderTable(); if(ctx) drawWheel(); document.getElementById('participant-count') && (document.getElementById('participant-count').innerText = `${window.appState.entries.length} Peserta siap diputar`); }
 
-        function hybridAddEntry(dataInput) { const newId = 'entry_' + Date.now().toString(36); const payload = { id: newId, data: dataInput }; let localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]'); localData.push(payload); localStorage.setItem(getLocalKey(), JSON.stringify(localData)); updateEntries(localData); if (db) { db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(newId).set(dataInput).catch(e => console.warn(e)); } }
-        function hybridDeleteEntry(id) { let localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]'); localData = localData.filter(e => e.id !== id); localStorage.setItem(getLocalKey(), JSON.stringify(localData)); updateEntries(localData); if (db) { db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(id).delete().catch(e => console.warn(e)); } }
+        function hybridAddEntry(dataInput){ const newId = 'entry_' + Date.now().toString(36); const payload = { id:newId, data: dataInput }; let localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]'); localData.push(payload); localStorage.setItem(getLocalKey(), JSON.stringify(localData)); updateEntries(localData); if(db){ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(newId).set(dataInput).catch(e=>console.warn(e)); } showFloatingNotif('Berhasil ditambahkan'); }
+        function hybridDeleteEntry(id){ let localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]'); localData = localData.filter(e=>e.id!==id); localStorage.setItem(getLocalKey(), JSON.stringify(localData)); updateEntries(localData); if(db){ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(id).delete().catch(()=>{}); } }
 
-        function clearAllData() { if (!confirm('Yakin ingin menghapus semua data?')) return; localStorage.setItem(getLocalKey(), '[]'); updateEntries([]); if (db) { db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').get().then(s => { s.forEach(d => d.ref.delete().catch(() => {})); }).catch(()=>{}); } }
+        function clearAllData(){ if(!confirm('Yakin ingin menghapus semua data?')) return; localStorage.setItem(getLocalKey(),'[]'); updateEntries([]); if(db){ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').get().then(s=>{ s.forEach(d=>d.ref.delete().catch(()=>{})); }).catch(()=>{});} }
 
-        // === WHEEL FUNCTIONS ===
-        function setupCanvas() { if (!canvas) return; const container = document.getElementById('wheel-container'); if (!container) return; const size = Math.max(Math.min(container.clientWidth, 480), 260); canvas.width = size * devicePixelRatio; canvas.height = size * devicePixelRatio; canvas.style.width = size + 'px'; canvas.style.height = size + 'px'; ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); drawWheel(); }
-        function drawWheel() { if (!ctx || !canvas) return; const entries = window.appState.entries; ctx.clearRect(0, 0, canvas.width, canvas.height); const cx = canvas.width / 2; const cy = canvas.height / 2; /* drawing simplified... */ }
-
-        function spinWheel() { const entries = window.appState.entries; if (entries.length === 0) { showCustomAlert("Info", "Data peserta masih kosong!"); return; } if (window.appState.isSpinning) return; /* spin logic omitted for brevity */ }
-
-        // === RENDER FUNCTIONS ===
-        function renderTable() {
-            // scope table elements to view-data to avoid duplicate-id collisions
-            const thead = document.querySelector('#view-data #table-head');
-            const tbody = document.querySelector('#view-data #table-body');
-            const emptyState = document.querySelector('#view-data #empty-state');
-            const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema();
-            if (!thead || !tbody || !emptyState) return;
-            if (window.appState.entries.length === 0) { emptyState.classList.remove('hide'); thead.innerHTML = ''; tbody.innerHTML = ''; return; }
-            emptyState.classList.add('hide');
-            const visibleCols = form.columns.filter(c => c.visible);
-            const headers = ['No', ...visibleCols.map(c => c.label), 'Aksi'];
-            thead.innerHTML = `<tr>${headers.map(h => `<th class="py-3 px-3 text-left font-bold">${h}</th>`).join('')}</tr>`;
-            tbody.innerHTML = window.appState.entries.map((e, i) => {
-                const cells = visibleCols.map(c => `<td class="py-3 px-3 text-slate-700">${(e.data && (e.data[c.key] || '')) || '-'}</td>`).join('');
-                return `
-                <tr class="hover:bg-blue-50/50 transition-colors border-b">
-                    <td class="py-3 px-3 text-center font-bold text-slate-500">${i+1}</td>
-                    ${cells}
-                    <td class="py-3 px-3 text-center">
-                        <button type="button" onclick="hybridDeleteEntry('${e.id}')" class="bg-red-50 hover:bg-red-500 text-red-500 hover:text-white w-7 h-7 rounded-lg flex items-center justify-center">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-            }).join('');
+        // === WHEEL (simplified drawing for brevity) ===
+        function setupCanvas(){ if(!canvas) return; const container = document.getElementById('wheel-container'); if(!container) return; const size = Math.max(Math.min(container.clientWidth, 480), 260); const ratio = window.devicePixelRatio || 1; canvas.width = size * ratio; canvas.height = size * ratio; canvas.style.width = size + 'px'; canvas.style.height = size + 'px'; if(ctx) ctx.setTransform(ratio,0,0,ratio,0,0); drawWheel(); }
+        function drawWheel(){ if(!ctx||!canvas) return; const entries = window.appState.entries || []; const cx = canvas.width/2; const cy = canvas.height/2; ctx.clearRect(0,0,canvas.width,canvas.height); const total = Math.max(entries.length,1); const radius = Math.min(canvas.width, canvas.height)/2 - 4; for(let i=0;i<total;i++){ const start = (i/total)*Math.PI*2; const end = ((i+1)/total)*Math.PI*2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,radius,start,end); ctx.closePath(); ctx.fillStyle = generateColor(i,total); ctx.fill(); }
+            // center
+            ctx.beginPath(); ctx.fillStyle='#fff'; ctx.arc(cx,cy, radius*0.26,0,Math.PI*2); ctx.fill(); ctx.font='700 18px Plus Jakarta Sans'; ctx.fillStyle='#0f172a'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('SPIN', cx, cy);
         }
 
-        // === EXPORT FUNCTIONS ===
-        function exportToExcel() { if (window.appState.entries.length === 0) { showCustomAlert('Info', 'Tidak ada data untuk diexport'); return; } const data = window.appState.entries.map((e, i) => ({ No: i+1, ...e.data })); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Data'); XLSX.writeFile(wb, `undian_${window.appState.roomId || 'room'}.xlsx`); }
-        function exportToPDF() { if (window.appState.entries.length === 0) { showCustomAlert('Info', 'Tidak ada data untuk diexport'); return; } const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.text('Data Undian', 14, 20); doc.save(`undian_${window.appState.roomId || 'room'}.pdf`); }
+        document.getElementById('spin-btn') && document.getElementById('spin-btn').addEventListener('click', spinWheel);
+        function spinWheel(){ const entries = window.appState.entries || []; if(entries.length===0){ showCustomAlert('Info','Data peserta masih kosong!'); return; } if(window.appState.isSpinning) return; window.appState.isSpinning = true; // basic spin emulation
+            const winner = entries[Math.floor(Math.random()*entries.length)]; setTimeout(()=>{ saveWinner((winner.data && (winner.data.name || winner.data.nama)) || 'Pemenang'); window.appState.isSpinning=false; }, 1200);
+        }
 
-        function processImport(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { try { const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data, { type: 'array' }); const firstSheet = workbook.Sheets[workbook.SheetNames[0]]; const rows = XLSX.utils.sheet_to_json(firstSheet); const mapped = rows.map((r, idx) => ({ id: 'entry_' + Date.now().toString(36) + '_' + idx, data: r })); localStorage.setItem(getLocalKey(), JSON.stringify(mapped)); updateEntries(mapped); } catch (err) { showCustomAlert('Gagal', 'Import file gagal. Pastikan format benar.'); } }; reader.readAsArrayBuffer(file); }
+        function showFloatingNotif(msg){ const el = document.createElement('div'); el.className='floating-notif'; el.innerText = msg; document.body.appendChild(el); setTimeout(()=> el.remove(), 2200); }
+
+        // === RENDER TABLE (scoped to view-data) ===
+        function renderTable(){ const thead = document.querySelector('#view-data #table-head'); const tbody = document.querySelector('#view-data #table-body'); const emptyState = document.querySelector('#view-data #empty-state'); const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); if(!thead||!tbody||!emptyState) return; if(window.appState.entries.length===0){ emptyState.classList.remove('hide'); thead.innerHTML=''; tbody.innerHTML=''; return; } emptyState.classList.add('hide'); const visibleCols = form.columns.filter(c=>c.visible); const headers = ['No', ...visibleCols.map(c=>c.label), 'Aksi']; thead.innerHTML = `<tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr>`; tbody.innerHTML = window.appState.entries.map((e,i)=>{ const cells = visibleCols.map(c=>`<td>${(e.data && (e.data[c.key]||''))||'-'}</td>`).join(''); return `<tr><td class='text-center font-bold'>${i+1}</td>${cells}<td class='text-center'><button onclick="hybridDeleteEntry('${e.id}')" class='bg-red-50 px-2 py-1 rounded'>Hapus</button></td></tr>`; }).join(''); }
+
+        // === EXPORT / IMPORT ===
+        function exportToExcel(){ if(window.appState.entries.length===0){ showCustomAlert('Info','Tidak ada data untuk diexport'); return;} const data = window.appState.entries.map((e,i)=>({No:i+1,...e.data})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Data'); XLSX.writeFile(wb, `undian_${window.appState.roomId||'room'}.xlsx`); }
+        function exportToPDF(){ if(window.appState.entries.length===0){ showCustomAlert('Info','Tidak ada data untuk diexport'); return;} const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.text('Data Undian',14,20); doc.save(`undian_${window.appState.roomId||'room'}.pdf`); }
+        function processImport(event){ const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = (e)=>{ try{ const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data,{type:'array'}); const first = workbook.Sheets[workbook.SheetNames[0]]; const rows = XLSX.utils.sheet_to_json(first); const mapped = rows.map((r,idx)=>({ id:'entry_'+Date.now().toString(36)+'_'+idx, data: r })); localStorage.setItem(getLocalKey(), JSON.stringify(mapped)); updateEntries(mapped); showFloatingNotif('Import sukses'); }catch(err){ showCustomAlert('Gagal','Import file gagal. Pastikan format benar.'); } }; reader.readAsArrayBuffer(file); }
 
         // === WINNERS ===
-        function loadWinners() { const list = document.getElementById('winner-history-list'); let winners = JSON.parse(localStorage.getItem(getWinnerKey()) || '[]'); const now = Date.now(); winners = winners || []; window.appState.winners = winners; if (!list) return; if (winners.length === 0) list.innerHTML = `<p class="text-xs text-slate-500 text-center italic font-medium py-3">Belum ada pemenang</p>`; else list.innerHTML = winners.map(w => `<div class="text-sm font-bold">${w.name}</div>`).join(''); }
-        function saveWinner(name) { window.appState.winners.unshift({ name: name, time: Date.now() }); if (window.appState.winners.length > 10) window.appState.winners.pop(); localStorage.setItem(getWinnerKey(), JSON.stringify(window.appState.winners)); loadWinners(); }
+        function loadWinners(){ const list = document.getElementById('winner-history-list'); let winners = JSON.parse(localStorage.getItem(getWinnerKey())||'[]') || []; window.appState.winners = winners; if(!list) return; if(winners.length===0) list.innerHTML = `<p class='text-xs text-slate-500 italic'>Belum ada pemenang</p>`; else list.innerHTML = winners.map(w=>`<div class='text-sm font-bold'>${w.name}</div>`).join(''); }
+        function saveWinner(name){ window.appState.winners.unshift({ name, time: Date.now() }); if(window.appState.winners.length>10) window.appState.winners.pop(); localStorage.setItem(getWinnerKey(), JSON.stringify(window.appState.winners)); loadWinners(); showFloatingNotif('Pemenang: '+name); }
 
-        // === FORMS (schema for manual entry & columns) ===
-        function defaultFormSchema() { return { name: 'Form Utama', columns: [ { key: 'name', label: 'Nama', visible: true, required: true }, { key: 'category', label: 'Divisi', visible: true, required: false } ] }; }
+        // === FORMS ===
+        function defaultFormSchema(){ return { name:'Form Utama', columns:[ { key:'name', label:'Nama', visible:true, required:true }, { key:'category', label:'Divisi', visible:true, required:false } ] }; }
+        function loadForms(){ const raw = localStorage.getItem(getFormsKey()); if(raw){ try{ window.appState.forms = JSON.parse(raw); }catch(e){ window.appState.forms=[defaultFormSchema()]; } } else { window.appState.forms = [defaultFormSchema()]; saveFormsToStorage(); } }
+        function saveFormsToStorage(){ localStorage.setItem(getFormsKey(), JSON.stringify(window.appState.forms)); renderFormsView(); renderManualForm(); renderTable(); }
 
-        function loadForms() { const raw = localStorage.getItem(getFormsKey()); if (raw) { try { window.appState.forms = JSON.parse(raw); } catch (e) { window.appState.forms = [defaultFormSchema()]; } } else { window.appState.forms = [defaultFormSchema()]; saveFormsToStorage(); } }
-        function saveFormsToStorage() { localStorage.setItem(getFormsKey(), JSON.stringify(window.appState.forms)); renderFormsView(); renderManualForm(); renderTable(); }
+        function handleAddFormRequest(){ if(window.appState.forms.length>=7){ showCustomAlert('Batas','Maksimal 7 formulir.'); return; } if(window.appState.forms.length>=3 && !isUnlocked()){ window.open(SAWERIA,'_blank'); showCustomAlert('Donasi','Untuk membuka lebih banyak formulir, dukung kami di Saweria.'); return; } addEmptyForm(); }
+        function addEmptyForm(){ const f = { name:`Form ${window.appState.forms.length+1}`, columns:[ { key:'name', label:'Nama', visible:true, required:true }, { key:'extra', label:'Keterangan', visible:true, required:false } ] }; window.appState.forms.push(f); saveFormsToStorage(); }
+        function deleteForm(idx){ if(!confirm('Hapus formulir ini?')) return; window.appState.forms.splice(idx,1); if(window.appState.selectedForm>=window.appState.forms.length) window.appState.selectedForm=0; saveFormsToStorage(); }
+        function editFormName(idx){ const name = prompt('Nama formulir:', window.appState.forms[idx].name); if(name!==null){ window.appState.forms[idx].name = name.trim()||window.appState.forms[idx].name; saveFormsToStorage(); } }
+        function toggleColumnVisibility(formIdx,colKey){ const form = window.appState.forms[formIdx]; const col = form.columns.find(c=>c.key===colKey); if(!col) return; if(col.required) return; col.visible = !col.visible; saveFormsToStorage(); }
+        function editColumnLabel(formIdx,colKey){ const form = window.appState.forms[formIdx]; const col = form.columns.find(c=>c.key===colKey); if(!col) return; const label = prompt('Label kolom:', col.label); if(label!==null){ col.label = label.trim()||col.label; saveFormsToStorage(); } }
+        function selectForm(idx){ window.appState.selectedForm = idx; renderManualForm(); renderFormsView(); renderTable(); }
 
-        function handleAddFormRequest() { if (window.appState.forms.length >= 7) { showCustomAlert('Batas', 'Maksimal 7 formulir.'); return; } if (window.appState.forms.length >= 3 && !isUnlocked()) { window.open(SAWERIA, '_blank'); showCustomAlert('Donasi', 'Untuk membuka lebih banyak formulir, dukung kami di Saweria.'); return; } addEmptyForm(); }
-        function addEmptyForm() { const f = { name: `Form ${window.appState.forms.length + 1}`, columns: [ { key: 'name', label: 'Nama', visible: true, required: true }, { key: 'extra', label: 'Keterangan', visible: true, required: false } ] }; window.appState.forms.push(f); saveFormsToStorage(); }
-        function deleteForm(idx) { if (!confirm('Hapus formulir ini?')) return; window.appState.forms.splice(idx,1); if (window.appState.selectedForm >= window.appState.forms.length) window.appState.selectedForm = 0; saveFormsToStorage(); }
-        function editFormName(idx) { const name = prompt('Nama formulir:', window.appState.forms[idx].name); if (name !== null) { window.appState.forms[idx].name = name.trim() || window.appState.forms[idx].name; saveFormsToStorage(); } }
-        function toggleColumnVisibility(formIdx, colKey) { const form = window.appState.forms[formIdx]; const col = form.columns.find(c=>c.key===colKey); if (!col) return; if (col.required) return; col.visible = !col.visible; saveFormsToStorage(); }
-        function editColumnLabel(formIdx, colKey) { const form = window.appState.forms[formIdx]; const col = form.columns.find(c=>c.key===colKey); if (!col) return; const label = prompt('Label kolom:', col.label); if (label !== null) { col.label = label.trim() || col.label; saveFormsToStorage(); } }
-        function selectForm(idx) { window.appState.selectedForm = idx; renderManualForm(); renderFormsView(); renderTable(); }
+        function renderFormsView(){ const container = document.getElementById('forms-list'); if(!container) return; container.innerHTML = window.appState.forms.map((f,i)=>`<div class='p-3 bg-white rounded-lg shadow-sm'><div class='flex justify-between items-start'><div><div class='text-sm font-bold'>${f.name}</div><div class='text-xs text-slate-500'>${f.columns.filter(c=>c.visible).map(c=>c.label).join(', ')||'Kosong'}</div></div><div class='flex gap-2'><button class='px-2 py-1 text-xs border rounded' onclick='selectForm(${i})'>Pilih</button><button class='px-2 py-1 text-xs border rounded' onclick='editFormName(${i})'>Edit</button><button class='px-2 py-1 text-xs border rounded text-red-600' onclick='deleteForm(${i})'>Hapus</button></div></div><div class='mt-3 text-xs'><div class='font-bold mb-1'>Kelola Kolom</div>${f.columns.map(col=>`<div class='flex items-center gap-2 mb-1'><input type='checkbox' ${col.visible?'checked':''} ${col.required?'disabled':''} onclick="toggleColumnVisibility(${i},'${col.key}')"/><div class='flex-1 text-sm'>${col.label} ${col.required?'<span class=\'text-xs text-amber-500\'>(wajib)</span>':''}</div><button class='text-xs text-slate-500' onclick="editColumnLabel(${i},'${col.key}')">Ubah</button></div>`).join('')}<div class='mt-2'><button class='text-xs bg-amber-500 text-white px-2 py-1 rounded' onclick='handleAddCustomColumn(${i})'>Tambah Kolom Custom</button></div></div></div>`).join(''); Array.from(container.children).forEach((el,idx)=>{ if(idx===window.appState.selectedForm) el.classList.add('ring-2','ring-sky-200'); else el.classList.remove('ring-2','ring-sky-200'); }); }
 
-        function renderFormsView() { const container = document.getElementById('forms-list'); if (!container) return; container.innerHTML = window.appState.forms.map((f, i) => `
-                <div class="p-3 bg-white/80 rounded-xl shadow-sm">
-                    <div class="flex justify-between items-start gap-2">
-                        <div>
-                            <div class="text-sm font-extrabold text-slate-800">${f.name}</div>
-                            <div class="text-xs text-slate-500 mt-1">${f.columns.filter(c=>c.visible).map(c=>c.label).join(', ') || 'Kosong'}</div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button class="text-xs px-2 py-1 bg-blue-50 rounded" onclick="selectForm(${i})">Pilih</button>
-                            <button class="text-xs px-2 py-1 bg-white border rounded" onclick="editFormName(${i})">Edit</button>
-                            <button class="text-xs px-2 py-1 bg-red-50 rounded text-red-600" onclick="deleteForm(${i})">Hapus</button>
-                        </div>
-                    </div>
-                    <div class="mt-3 text-xs">
-                        <div class="font-bold mb-1">Kelola Kolom</div>
-                        ${f.columns.map(col => `
-                            <div class="flex items-center gap-2 mb-1">
-                                <input type="checkbox" ${col.visible? 'checked': ''} ${col.required? 'disabled': ''} onclick="toggleColumnVisibility(${i}, '${col.key}')" />
-                                <div class="flex-1 text-sm">${col.label} ${col.required? '<span class="text-xs text-amber-500">(wajib)</span>':''}</div>
-                                <button class="text-xs text-slate-500" onclick="editColumnLabel(${i}, '${col.key}')">Ubah Label</button>
-                            </div>
-                        `).join('')}
-                        <div class="mt-2">
-                            <button class="text-xs bg-amber-500 text-white px-2 py-1 rounded" onclick="handleAddCustomColumn(${i})">Tambah Kolom Custom</button>
-                        </div>
-                    </div>
-                </div>
-            `).join(''); Array.from(container.children).forEach((el, idx)=>{ if (idx===window.appState.selectedForm) el.classList.add('ring-2','ring-blue-200'); else el.classList.remove('ring-2','ring-blue-200'); }); }
+        // === CUSTOM COLUMNS gating to Saweria if >3
+        function handleAddCustomColumnRequest(){ handleAddCustomColumn(window.appState.selectedForm); }
+        function handleAddCustomColumn(formIdx){ const form = window.appState.forms[formIdx]; const customCount = form.columns.filter(c=>!c.required).length; if(customCount>=3 && !isUnlocked()){ // gate here
+                window.open(SAWERIA,'_blank'); showCustomAlert('Donasi','Untuk menambah kolom lebih dari 3, dukung kami di Saweria.'); return; }
+            const key = 'custom_' + Date.now().toString(36); form.columns.push({ key, label: 'Custom', visible: true, required: false }); saveFormsToStorage(); }
 
-        // === CUSTOM COLUMNS ===
-        function handleAddCustomColumnRequest() { handleAddCustomColumn(window.appState.selectedForm); }
-        function handleAddCustomColumn(formIdx) { const form = window.appState.forms[formIdx]; const customCount = form.columns.filter(c=>!c.required).length; if (customCount >= 3 && !isUnlocked()) { window.open(SAWERIA, '_blank'); showCustomAlert('Donasi', 'Untuk menambah kolom lebih dari 3, dukung kami di Saweria.'); return; } const key = 'custom_' + Date.now().toString(36); form.columns.push({ key, label: 'Custom', visible: true, required: false }); saveFormsToStorage(); }
+        // === MANUAL FORM render & actions ===
+        function renderManualForm(){ const fieldsContainer = document.getElementById('manual-form-fields'); const shortInput = document.getElementById('shortlink-input'); const activeFormName = document.getElementById('active-form-name'); const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); if(!fieldsContainer) return; fieldsContainer.innerHTML = form.columns.map(col=>`<div><label class='block text-sm font-semibold mb-1'>${col.label}${col.required?' *':''}</label><input name='${col.key}' class='solid-input w-full manual-input' ${col.required?'required':''} placeholder='${col.label}' data-key='${col.key}' /></div>`).join(''); if(shortInput) shortInput.value = `${location.origin}/${window.appState.roomId}`; if(activeFormName) activeFormName.innerText = form.name; Array.from(document.querySelectorAll('.manual-input')).forEach(inp=>{ inp.removeEventListener('input', livePreviewListener); inp.addEventListener('input', livePreviewListener); }); // autofocus first
+            const first = document.querySelector('.manual-input'); if(first) first.focus(); updateLivePreview(); }
+        function livePreviewListener(){ updateLivePreview(); }
+        function updateLivePreview(){ const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); const preview={}; Array.from(document.querySelectorAll('.manual-input')).forEach(inp=>{ const k = inp.getAttribute('data-key'); preview[k] = inp.value; }); const el = document.getElementById('manual-live-preview'); if(!el) return; const parts = Object.keys(preview).map(k=>`${k}: ${preview[k]||'-'}`); el.innerText = parts.join(' | '); }
+        function resetManualForm(){ const f = document.getElementById('manual-entry-form'); if(f){ f.reset(); updateLivePreview(); const first = document.querySelector('.manual-input'); if(first) first.focus(); } }
+        function addEntryFromForm(e){ e.preventDefault(); const formEl = document.getElementById('manual-entry-form'); const formData = new FormData(formEl); const formSchema = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); const data = {}; formSchema.columns.forEach(col=>{ data[col.key] = formData.get(col.key) || ''; }); hybridAddEntry(data); formEl.reset(); updateLivePreview(); }
 
-        // === MANUAL ENTRY FORM RENDER & ACTIONS ===
-        function renderManualForm() { const fieldsContainer = document.getElementById('manual-form-fields'); const shortInput = document.getElementById('shortlink-input'); const activeFormName = document.getElementById('active-form-name'); const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); if (!fieldsContainer) return; fieldsContainer.innerHTML = form.columns.map(col => `
-                <div>
-                    <label class="block text-[11px] font-bold mb-1">${col.label}${col.required? ' *':''}</label>
-                    <input name="${col.key}" class="solid-input w-full manual-input" ${col.required? 'required':''} placeholder="${col.label}" data-key="${col.key}" />
-                </div>
-            `).join(''); if (shortInput) shortInput.value = `${location.origin}/${window.appState.roomId}`; if (activeFormName) activeFormName.innerText = form.name; Array.from(document.querySelectorAll('.manual-input')).forEach(inp => { inp.removeEventListener('input', livePreviewListener); inp.addEventListener('input', livePreviewListener); }); updateLivePreview(); }
-        function livePreviewListener() { updateLivePreview(); }
-        function updateLivePreview() { const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); const preview = {}; Array.from(document.querySelectorAll('.manual-input')).forEach(inp => { const k = inp.getAttribute('data-key'); preview[k] = inp.value; }); document.getElementById('manual-live-preview').innerText = Object.keys(preview).map(k => `${k}: ${preview[k]}`).join(' | '); }
-        function escapeHtml(s){ return String(s).replace(/[&<>"]'/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]; }); }
-        function resetManualForm() { const f = document.getElementById('manual-entry-form'); if (f) { f.reset(); updateLivePreview(); } }
-        function addEntryFromForm(e) { e.preventDefault(); const formEl = document.getElementById('manual-entry-form'); const formData = new FormData(formEl); const formSchema = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); const data = {}; formSchema.columns.forEach(col => { data[col.key] = formData.get(col.key) || ''; }); hybridAddEntry(data); formEl.reset(); updateLivePreview(); }
+        // Shortlink copy (use /ROOM format)
+        function copyShortlink(){ const short = `${location.origin}/${window.appState.roomId}`; navigator.clipboard && navigator.clipboard.writeText(short).then(()=>{ showCustomAlert('Berhasil','Shortlink disalin ke Clipboard!'); }).catch(()=>{ showCustomAlert('Gagal','Sistem operasi menolak copy otomatis.'); }); }
 
-        // Shortlink copy (use /ROOM format to keep it short)
-        function copyShortlink() { const short = `${location.origin}/${window.appState.roomId}`; navigator.clipboard && navigator.clipboard.writeText(short).then(()=>{ showCustomAlert('Berhasil', 'Shortlink disalin ke Clipboard!'); }).catch(()=>{ showCustomAlert('Gagal', 'Sistem operasi menolak copy otomatis.'); }); }
+        // ROOM creation limit gating
+        function handleCreateNewRoomRequest(){ const count = parseInt(localStorage.getItem(getRoomCountKey())||'0',10); if(count>=3 && !isUnlocked()){ window.open(SAWERIA,'_blank'); showCustomAlert('Batas','Untuk membuat lebih banyak room, dukung via Saweria.'); return; } createNewRoom(); }
+        function createNewRoom(){ guestCode = Math.random().toString(36).substring(2,8).toUpperCase(); window.appState.roomId = guestCode; document.getElementById('header-room-id').innerText = `Room: ${guestCode}`; document.getElementById('shortlink-input') && (document.getElementById('shortlink-input').value = `${location.origin}/${guestCode}`); localStorage.setItem(getRoomCountKey(), String((parseInt(localStorage.getItem(getRoomCountKey())||'0',10)+1))); }
 
-        // === ROOM CREATION LIMIT (redirect to saweria if exceeded and not unlocked) ===
-        function handleCreateNewRoomRequest() { const count = parseInt(localStorage.getItem(getRoomCountKey()) || '0', 10); if (count >= 3 && !isUnlocked()) { window.open(SAWERIA, '_blank'); showCustomAlert('Batas', 'Untuk membuat lebih banyak room, silakan dukung via Saweria.'); return; } createNewRoom(); }
-        function createNewRoom() { guestCode = Math.random().toString(36).substring(2, 8).toUpperCase(); window.appState.roomId = guestCode; document.getElementById('header-room-id').innerText = `Room: ${guestCode}`; document.getElementById('shortlink-input') && (document.getElementById('shortlink-input').value = `${location.origin}/${guestCode}`); localStorage.setItem(getRoomCountKey(), String((parseInt(localStorage.getItem(getRoomCountKey())||'0',10) + 1))); }
+        function openHistoryModal(){ showCustomAlert('Room History', 'Room: ' + window.appState.roomId + '\nPeserta: ' + window.appState.entries.length + '\nPemenang: ' + window.appState.winners.length); }
 
-        function openHistoryModal() { showCustomAlert('Room History', 'Room: ' + window.appState.roomId + '\nPeserta: ' + window.appState.entries.length + '\nPemenang: ' + window.appState.winners.length); }
+        // Share link generation
+        function generateShareLink(){ const base = window.location.host; const link = `https://${base}/${window.appState.roomId}`; const linkEl = document.getElementById('share-link-text'); if(linkEl) linkEl.innerText = link; }
 
-        // === SHARE LINK GENERATION (uses short /ROOM format) ===
-        function generateShareLink() {
-            let base = window.location.host;
-            const link = `https://${base}/${window.appState.roomId}`;
-            const linkEl = document.getElementById('share-link-text');
-            if(linkEl) linkEl.innerText = link;
-        }
-        function copyShareLink() { const link = document.getElementById('share-link-text').innerText || `${location.origin}/${window.appState.roomId}`; navigator.clipboard.writeText(link).then(() => showCustomAlert('Berhasil', 'Link disalin ke Clipboard!')).catch(() => showCustomAlert('Gagal', 'Sistem operasi menolak copy otomatis.')); }
+        // Robust UI switcher - prevents getting stuck
+        function bindNavButtons(){ const buttons = document.querySelectorAll('#bottom-navbar .nav-btn'); buttons.forEach(btn=>{ btn.addEventListener('click', (ev)=>{ const view = btn.getAttribute('data-view'); switchView(view); }); btn.addEventListener('touchend', (ev)=>{ ev.preventDefault(); const view = btn.getAttribute('data-view'); switchView(view); }); }); // fab
+            document.getElementById('fab-btn').addEventListener('click', ()=>{ copyShortlink(); }); }
 
-        // --- UI SWITCHER ---
-        function switchView(viewName) {
-            document.querySelectorAll('section[id^="view-"]').forEach(el => el.classList.add('hide'));
-            document.getElementById('view-' + viewName).classList.remove('hide');
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active', 'bg-white/95', 'text-blue-600');
-                btn.classList.add('text-slate-600', 'hover:bg-white/50');
-                btn.style.boxShadow = 'none';
-            });
-            
-            const activeBtn = document.getElementById('nav-' + viewName);
-            activeBtn.classList.remove('text-slate-600', 'hover:bg-white/50');
-            activeBtn.classList.add('active', 'bg-white/95', 'text-blue-600');
-            activeBtn.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
-
-            if(viewName === 'wheel') setTimeout(setupCanvas, 50);
+        function switchView(viewName){ if(window.appState.isSwitchingView) return; const target = document.getElementById('view-'+viewName); if(!target) return; window.appState.isSwitchingView = true; document.querySelectorAll('section[id^="view-"]').forEach(el=> el.classList.add('hide')); target.classList.remove('hide'); // update nav active
+            document.querySelectorAll('#bottom-navbar .nav-btn').forEach(btn=>{ btn.classList.remove('active'); if(btn.getAttribute('data-view')===viewName) btn.classList.add('active'); }); // ensure canvas sized on wheel
+            if(viewName==='wheel'){ setTimeout(()=>{ setupCanvas(); },60); }
+            // show/hide FAB when in data view
+            const fab = document.getElementById('fab-share'); if(fab){ if(viewName==='data' && window.innerWidth <= 768) fab.style.display='block'; else fab.style.display='none'; }
+            setTimeout(()=>{ window.appState.isSwitchingView=false; }, 220);
         }
 
-        // --- INIT ---
-        document.addEventListener('DOMContentLoaded', () => { if (sessionStorage.getItem('logged_in')) { fallbackProceed(); } else { document.getElementById('portal-view').classList.remove('hide'); } });
-        document.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !document.getElementById('portal-view').classList.contains('hide')) { handleEmailLogin(e); } });
+        // small helper to show floating notifications
+        function showFloating(msg){ const f = document.createElement('div'); f.className='floating-notif'; f.innerText = msg; document.body.appendChild(f); setTimeout(()=> f.remove(), 1800); }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', ()=>{ if(sessionStorage.getItem('logged_in')) fallbackProceed(); else document.getElementById('portal-view').classList.remove('hide'); });
+        document.addEventListener('keypress', (e)=>{ if(e.key==='Enter' && !document.getElementById('portal-view').classList.contains('hide')) handleEmailLogin(e); });
 
         // Expose unlock helper for testing after donation (manual step)
-        window.__unlockAfterDonation = function(){ setUnlocked(); showCustomAlert('Terima Kasih', 'Fitur tambahan sudah terbuka.'); };
+        window.__unlockAfterDonation = function(){ setUnlocked(); showCustomAlert('Terima Kasih','Fitur tambahan sudah terbuka.'); };
     </script>
 </body>
 </html>
