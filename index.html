@@ -23,99 +23,69 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        /* Disable text shadows/extra font effects site-wide so typography stays clean */
         * { text-shadow: none !important; filter: none !important; }
-        
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background: radial-gradient(circle at 10% 10%, rgba(99,102,241,0.06) 0 120px, transparent 121px), radial-gradient(circle at 90% 80%, rgba(34,197,94,0.04) 0 140px, transparent 141px), linear-gradient(180deg,#f8fafc 0%,#eef2ff 100%);
             min-height: 100vh;
             color: #0f172a;
             overflow-x: hidden;
         }
 
         .hide { display: none !important; }
-        
-        /* Modern clean glass style but less busy */
-        .glass-panel { 
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border: 1px solid rgba(15, 23, 42, 0.06);
-            box-shadow: 0 6px 18px rgba(12, 18, 26, 0.04);
-            border-radius: 16px;
-        }
-        
-        .glass-nav { 
-            background: rgba(255, 255, 255, 1);
-            border: 1px solid rgba(12, 18, 26, 0.06);
-            box-shadow: 0 6px 18px rgba(12, 18, 26, 0.06);
-            border-radius: 9999px;
-        }
+        .glass-panel { background: rgba(255,255,255,0.9); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border:1px solid rgba(12,18,26,0.04); box-shadow:0 8px 30px rgba(2,6,23,0.04); border-radius:14px; }
+        .glass-nav { background:#fff; border-radius:9999px; box-shadow:0 8px 30px rgba(2,6,23,0.04); }
+        .solid-input{ background:#fff !important; border:1px solid rgba(12,18,26,0.06) !important; border-radius:10px; padding:.55rem .75rem; }
+        .solid-input:focus{ box-shadow:0 8px 30px rgba(14,165,233,.08); outline:none; transform:translateY(-1px); }
+        .stabillo{ font-weight:800; }
 
-        .solid-input {
-            background-color: #fff !important;
-            color: #0f172a !important;
-            border: 1px solid rgba(12,18,26,0.06) !important;
-            border-radius: 12px;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.95rem;
-            transition: box-shadow .12s ease, transform .06s ease;
-        }
-        .solid-input:focus{ box-shadow: 0 6px 18px rgba(14, 165, 233, 0.12); outline: none; transform: translateY(-1px); }
+        /* playful small icons via emoji or svg where appropriate */
+        .icon-playful{ font-size:1.05rem; margin-right:.35rem; }
 
-        /* Simplified heading style */
-        .stabillo {
-            background: transparent !important;
-            color: inherit !important;
-            padding: 0 !important;
-            display: inline-block;
-            font-weight: 800;
-            letter-spacing: -0.01em;
-        }
+        #wheel-container{ position:relative; width:100%; max-width:520px; margin:0 auto; aspect-ratio:1/1; }
+        #wheel-canvas{ width:100%; height:100%; border-radius:50%; display:block; }
+        .pointer{ position:absolute; top:-18px; left:50%; transform:translateX(-50%); width:36px; height:44px; background:#ef4444; clip-path:polygon(50% 100%,0 0,100% 0); box-shadow:0 6px 18px rgba(0,0,0,0.12); }
+        .spin-center-btn{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:92px; height:92px; border-radius:9999px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; color:#0f172a; box-shadow:0 12px 32px rgba(2,6,23,0.08); cursor:pointer; }
 
-        #wheel-container { position: relative; width: 100%; max-width: 480px; margin: 0 auto; aspect-ratio: 1/1; }
-        #wheel-canvas { width:100%; height:100%; border-radius:50%; display:block; }
+        #bottom-navbar{ width:95%; max-width:720px; padding:10px; bottom:18px; left:50%; transform:translateX(-50%); position:fixed; z-index:9999; }
+        .nav-btn{ padding:10px 14px; border-radius:12px; display:flex; align-items:center; gap:.6rem; }
+        .nav-btn.active{ background:linear-gradient(90deg,#06b6d4,#0ea5e9); color:#fff; box-shadow:0 12px 40px rgba(14,165,233,0.12); }
 
-        .pointer { position:absolute; top:-18px; left:50%; transform:translateX(-50%); z-index:60; width:34px; height:42px; background:#ef4444; clip-path:polygon(50% 100%, 0 0, 100% 0); }
-
-        .spin-center-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:60; width:96px; height:96px; border-radius:9999px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; color:#0f172a; box-shadow:0 8px 24px rgba(2,6,23,0.06); cursor:pointer; }
-
-        .spin-title { text-align:center; margin-bottom:8px; }
-        .spin-title h2{ font-size:1.35rem; font-weight:800; }
-        .spin-title p{ font-size:0.9rem; color: rgba(15,23,42,0.6); }
-
-        /* Floating notifications */
-        .floating-notif{ position:fixed; left:50%; transform:translateX(-50%); bottom:140px; padding:10px 18px; border-radius:9999px; color:#fff; background:#111827; box-shadow:0 8px 30px rgba(2,6,23,0.2); z-index:99999; }
-
-        /* Bottom nav: ensure always tappable */
-        #bottom-navbar{ width:95%; max-width:680px; padding:8px; bottom:18px; z-index:99999; left:50%; transform:translateX(-50%); }
-        .nav-btn{ cursor:pointer; -webkit-tap-highlight-color:transparent; touch-action:manipulation; user-select:none; padding:10px 14px; }
-        .nav-btn.active{ background:#0ea5e9; color:#fff; box-shadow:0 8px 30px rgba(14,165,233,0.12); }
-
-        header{ position:sticky; top:0; z-index:80; }
-        #main-scroll-area{ max-height:calc(100vh - 112px); overflow-y:auto; padding-bottom:120px; }
-
-        /* FAB share button for mobile: improved placement and accessibility */
         #fab-share{ position:fixed; right:20px; bottom:110px; z-index:99998; display:none; }
-        #fab-share button{ background:#06b6d4; color:white; border-radius:9999px; width:56px; height:56px; box-shadow:0 12px 28px rgba(6,182,212,0.14); display:flex; align-items:center; justify-content:center; border:none; }
-        #fab-share button:active{ transform:scale(.98); }
-        @media (max-width:768px){ #fab-share{ display:block; } .spin-center-btn{ width:80px; height:80px; } }
+        #fab-share button{ background:linear-gradient(135deg,#fb7185,#f97316); color:#fff; border-radius:9999px; width:56px; height:56px; display:flex; align-items:center; justify-content:center; box-shadow:0 12px 30px rgba(249,115,22,0.12); }
+        @media(max-width:768px){ #fab-share{ display:block; } .spin-center-btn{ width:80px; height:80px; } }
 
-        /* Table and forms tweaks for readability */
-        table{ border-collapse:collapse; }
-        th, td{ padding:10px 12px; }
-        thead th{ font-weight:800; font-size:12px; color:#0f172a; }
+        /* table */
+        table{ width:100%; border-collapse:collapse; }
+        th,td{ padding:10px 12px; }
+        thead th{ font-weight:800; font-size:13px; }
 
+        /* playful badges */
+        .badge-playful{ background:linear-gradient(90deg,#fde68a,#fbcfe8); padding:.25rem .6rem; border-radius:999px; font-weight:700; }
+
+        /* donation modal */
+        #donation-modal .glass-panel{ max-width:420px; }
     </style>
 </head>
 <body class="text-slate-800 antialiased h-screen flex flex-col relative">
+
+    <!-- CUSTOM DONATION MODAL (shown after redirect to Saweria) -->
+    <div id="donation-modal" class="fixed inset-0 z-[400] flex items-center justify-center hide bg-black/40">
+        <div class="glass-panel p-6 text-center">
+            <h3 class="text-lg font-bold mb-2">Terima Kasih atas dukungan Anda!</h3>
+            <p class="text-sm text-slate-600 mb-4">Setelah Anda menyelesaikan donasi di Saweria, klik tombol di bawah untuk membuka fitur tambahan.</p>
+            <div class="flex gap-2 justify-center">
+                <button onclick="__openSaweria()" class="px-3 py-2 bg-amber-400 rounded-lg">Buka Saweria</button>
+                <button onclick="confirmDonationDone()" class="px-3 py-2 bg-blue-600 text-white rounded-lg">Saya Sudah Donasi</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ALERT MODAL -->
     <div id="custom-alert" class="fixed inset-0 bg-black/40 z-[300] flex items-center justify-center hide backdrop-blur-sm transition-opacity">
         <div class="glass-panel bg-white p-6 max-w-sm w-full mx-4 text-center rounded-2xl">
             <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                <i class="fa-solid fa-circle-info"></i>
+                <span class="icon-playful">✨</span>
             </div>
             <h3 id="custom-alert-title" class="text-lg font-bold text-slate-800 mb-2">Info</h3>
             <p id="custom-alert-message" class="text-slate-600 text-sm mb-4 whitespace-pre-wrap leading-relaxed"></p>
@@ -123,12 +93,32 @@
         </div>
     </div>
 
+    <!-- PUBLIC REGISTRATION VIEW (shortlink) -->
+    <div id="public-view" class="fixed inset-0 z-[250] flex items-start justify-center hide overflow-auto bg-white/60 p-6">
+        <div class="glass-panel p-6 max-w-md w-full mt-12">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center bg-amber-100">🎉</div>
+                <div>
+                    <h2 class="font-bold text-lg">Daftar ke Room</h2>
+                    <div class="text-xs text-slate-500">Masukkan data Anda untuk ikut undian realtime</div>
+                </div>
+            </div>
+            <form id="public-register-form" onsubmit="submitPublicRegistration(event)" class="space-y-3">
+                <div id="public-form-fields"></div>
+                <div class="flex gap-2">
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg" type="submit">Daftar</button>
+                    <button type="button" onclick="closePublicView()" class="bg-white border px-4 py-2 rounded-lg">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- LOGIN PORTAL -->
-    <div id="portal-view" class="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-y-auto bg-black/8 backdrop-blur-sm">
+    <div id="portal-view" class="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-y-auto bg-black/8 backdrop-blur-sm hide">
         <div class="relative w-full max-w-[360px] mx-4 my-auto py-8">
             <div class="text-center mb-4">
                 <div class="w-24 h-24 bg-white rounded-full shadow-md mx-auto mb-3 flex items-center justify-center">
-                    <i class="fa-solid fa-trophy text-3xl text-yellow-500"></i>
+                    <span class="icon-playful">🏆</span>
                 </div>
                 <h1 class="text-2xl font-extrabold stabillo">Aku Juara</h1>
                 <p class="text-slate-500 text-sm">Roda Undian Realtime</p>
@@ -159,21 +149,19 @@
     </div>
 
     <!-- MAIN APP -->
-    <div id="app-view" class="h-full flex flex-col hide relative">
+    <div id="app-view" class="h-full flex flex-col relative hide">
         
         <!-- Header -->
         <header class="px-5 py-3 flex justify-between items-center glass-panel">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center shadow-sm">
-                    <i class="fa-solid fa-trophy text-2xl text-yellow-500"></i>
-                </div>
+                <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center shadow-sm">🌟</div>
                 <div>
                     <h1 class="text-lg font-black stabillo">Aku Juara</h1>
                     <p id="header-room-id" class="text-[11px] font-mono text-slate-600 mt-1">Room: -</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button type="button" onclick="openHistoryModal()" class="bg-white p-2 rounded-lg shadow-sm"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                <button type="button" onclick="openHistoryModal()" class="bg-white p-2 rounded-lg shadow-sm">⏱️</button>
                 <button type="button" onclick="handleCreateNewRoomRequest()" class="bg-blue-600 text-white px-3 py-2 rounded-lg">Baru</button>
             </div>
         </header>
@@ -237,7 +225,7 @@
                                     <div class="flex gap-2">
                                         <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg" type="submit">Tambah</button>
                                         <button type="button" onclick="resetManualForm()" class="bg-white border px-4 py-2 rounded-lg">Reset</button>
-                                        <button type="button" class="bg-amber-500 text-white px-3 py-2 rounded-lg ml-auto" onclick="handleAddCustomColumnRequest()"><i class="fa-solid fa-plus"></i></button>
+                                        <button type="button" class="bg-amber-500 text-white px-3 py-2 rounded-lg ml-auto" onclick="handleAddCustomColumnRequest()">➕</button>
                                     </div>
                                 </form>
 
@@ -295,13 +283,13 @@
 
         <!-- Bottom Navigation -->
         <nav id="bottom-navbar" class="fixed glass-nav flex items-center justify-between z-50 transition-transform shadow-lg">
-            <button type="button" data-view="wheel" id="nav-wheel" class="nav-btn active"><i class="fa-solid fa-circle-notch"></i> <span class="ml-2 hidden sm:inline">Roda</span></button>
-            <button type="button" data-view="data" id="nav-data" class="nav-btn"><i class="fa-solid fa-table-list"></i> <span class="ml-2 hidden sm:inline">Data</span></button>
-            <button type="button" data-view="forms" id="nav-form" class="nav-btn"><i class="fa-solid fa-list"></i> <span class="ml-2 hidden sm:inline">Form</span></button>
+            <button type="button" data-view="wheel" id="nav-wheel" class="nav-btn active"><span class="icon-playful">🎡</span><span class="ml-2 hidden sm:inline">Roda</span></button>
+            <button type="button" data-view="data" id="nav-data" class="nav-btn"><span class="icon-playful">🧾</span><span class="ml-2 hidden sm:inline">Data</span></button>
+            <button type="button" data-view="forms" id="nav-form" class="nav-btn"><span class="icon-playful">📝</span><span class="ml-2 hidden sm:inline">Form</span></button>
         </nav>
 
         <!-- FAB share for mobile -->
-        <div id="fab-share" aria-hidden="false"><button id="fab-btn" aria-label="Bagikan shortlink"><i class="fa-solid fa-share-alt"></i></button></div>
+        <div id="fab-share" aria-hidden="false"><button id="fab-btn" aria-label="Bagikan shortlink">🔗</button></div>
 
     </div>
 
@@ -343,7 +331,8 @@
             autoEliminate: false,
             hasSpun: false,
             forms: [],
-            selectedForm: 0
+            selectedForm: 0,
+            isPublicMode: false
         };
 
         const canvas = document.getElementById('wheel-canvas');
@@ -354,6 +343,10 @@
         const urlParams = new URLSearchParams(window.location.search);
         let guestCode = urlParams.get('r');
         const SAWERIA = 'https://saweria.co/jogja';
+
+        // parse short path /ROOM to support very short links (if hosting rewrites to index.html)
+        (function parsePathForRoom(){ try{ const parts = location.pathname.split('/').filter(Boolean); if(parts.length>=1){ const candidate = parts[0].toUpperCase(); if(/^[A-Z0-9]{4,8}$/.test(candidate)) { guestCode = guestCode || candidate; // public mode when no admin param present
+                        if(!urlParams.get('admin')) window.appState.isPublicMode = true; } } }catch(e){} })();
 
         // === UTILITIES ===
         const getLocalKey = () => `akujuara_data_${window.appState.roomId}`;
@@ -368,15 +361,19 @@
             document.getElementById('custom-alert-title').innerText = title;
             document.getElementById('custom-alert-message').innerText = message;
             el.classList.remove('hide');
-            setTimeout(() => { if (!el.classList.contains('hide')) el.classList.add('hide'); }, 3500);
+            setTimeout(()=>{ if(!el.classList.contains('hide')) el.classList.add('hide'); }, 3200);
         }
         function closeCustomAlert(){ document.getElementById('custom-alert').classList.add('hide'); }
 
-        function isUnlocked(){ return localStorage.getItem(getUnlockKey()) === '1'; }
-        function setUnlocked(){ localStorage.setItem(getUnlockKey(), '1'); }
+        function showDonationModal(){ document.getElementById('donation-modal').classList.remove('hide'); }
+        function __openSaweria(){ window.open(SAWERIA,'_blank'); }
+        function confirmDonationDone(){ setUnlocked(); document.getElementById('donation-modal').classList.add('hide'); showCustomAlert('Terima Kasih','Fitur tambahan sudah dibuka.'); }
+
+        function isUnlocked(){ return localStorage.getItem(getUnlockKey())==='1'; }
+        function setUnlocked(){ localStorage.setItem(getUnlockKey(),'1'); }
 
         // === LOGIN ===
-        function handleEmailLogin(e){ e.preventDefault(); const email = document.getElementById('login-email').value; const btn = document.getElementById('btn-email-login'); btn.disabled = true; btn.innerText = 'Memproses...'; if(!auth){ fallbackProceed(); return; } auth.signInWithEmailAndPassword(email,'').then(()=> fallbackProceed()).catch(()=>{ auth.signInAnonymously().then(()=>fallbackProceed()).catch(()=>fallbackProceed()); }); }
+        function handleEmailLogin(e){ e.preventDefault(); const email=document.getElementById('login-email').value; const btn=document.getElementById('btn-email-login'); if(btn) { btn.disabled=true; btn.innerText='Memproses...'; } if(!auth){ fallbackProceed(); return; } auth.signInWithEmailAndPassword(email,'').then(()=> fallbackProceed()).catch(()=>{ auth.signInAnonymously().then(()=>fallbackProceed()).catch(()=>fallbackProceed()); }); }
         function loginAsGuest(){ if(auth){ auth.signInAnonymously().then(()=>fallbackProceed()).catch(()=>fallbackProceed()); } else fallbackProceed(); }
 
         function fallbackProceed(){ document.getElementById('portal-view').classList.add('hide'); if(!guestCode){ guestCode = Math.random().toString(36).substring(2,8).toUpperCase(); } setupAppView(); }
@@ -385,106 +382,121 @@
         function setupAppView(){ window.appState.roomId = guestCode; document.getElementById('app-view').classList.remove('hide'); document.getElementById('header-room-id').innerText = `Room: ${guestCode}`; const shortInput = document.getElementById('shortlink-input'); if(shortInput) shortInput.value = `${location.origin}/${guestCode}`;
             loadForms(); loadWinners(); initDataSync(); bindNavButtons(); switchView('wheel'); renderManualForm(); renderFormsView();
             setTimeout(()=>{ if(ctx) setupCanvas(); },150);
-            window.addEventListener('resize', ()=>{ clearTimeout(resizeTimer); resizeTimer = setTimeout(()=>{ if(ctx) setupCanvas(); }, 250); });
+            window.addEventListener('resize', ()=>{ clearTimeout(resizeTimer); resizeTimer = setTimeout(()=>{ if(ctx) setupCanvas(); },250); });
+
+            // if public shortlink was used and appState.isPublicMode, show public view instead
+            if(window.appState.isPublicMode){ openPublicView(); }
         }
 
-        // === DATA SYNC ===
-        function initDataSync(){ const localData = JSON.parse(localStorage.getItem(getLocalKey())||'[]'); updateEntries(localData); if(db){ try{ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').onSnapshot(snapshot=>{ const remoteData=[]; snapshot.forEach(doc=>{ const item = doc.data(); remoteData.push({ id: doc.id, data: item.data? item.data: item }); }); localStorage.setItem(getLocalKey(), JSON.stringify(remoteData)); updateEntries(remoteData); }, err=>{ console.warn('Firestore offline', err); }); } catch(e){ console.warn(e); } } }
-        function updateEntries(data){ if(window.appState.isSpinning) return; window.appState.entries = data || []; renderTable(); if(ctx) drawWheel(); document.getElementById('participant-count') && (document.getElementById('participant-count').innerText = `${window.appState.entries.length} Peserta siap diputar`); }
+        // === DATA SYNC (with notification on remote additions) ===
+        function initDataSync(){ const localData = JSON.parse(localStorage.getItem(getLocalKey())||'[]'); updateEntries(localData); if(db){ try{ const colRef = db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries'); let firstSnapshot=true; colRef.onSnapshot(snapshot=>{ const remoteData=[]; snapshot.forEach(doc=>{ const item = doc.data(); remoteData.push({ id: doc.id, data: item.data? item.data: item }); }); localStorage.setItem(getLocalKey(), JSON.stringify(remoteData)); // show notification only for subsequent additions
+                        if(!firstSnapshot){ snapshot.docChanges().forEach(change=>{ if(change.type==='added'){ const d = change.doc.data(); const name = d.name || d.nama || Object.values(d)[0] || 'Peserta'; showFloatingNotif(`${name} sudah mendaftar`); } }); }
+                        firstSnapshot=false; updateEntries(remoteData); }, err=>{ console.warn('Firestore offline', err); }); } catch(e){ console.warn(e); } } }
 
-        function hybridAddEntry(dataInput){ const newId = 'entry_' + Date.now().toString(36); const payload = { id:newId, data: dataInput }; let localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]'); localData.push(payload); localStorage.setItem(getLocalKey(), JSON.stringify(localData)); updateEntries(localData); if(db){ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(newId).set(dataInput).catch(e=>console.warn(e)); } showFloatingNotif('Berhasil ditambahkan'); }
-        function hybridDeleteEntry(id){ let localData = JSON.parse(localStorage.getItem(getLocalKey()) || '[]'); localData = localData.filter(e=>e.id!==id); localStorage.setItem(getLocalKey(), JSON.stringify(localData)); updateEntries(localData); if(db){ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(id).delete().catch(()=>{}); } }
+        function updateEntries(data){ if(window.appState.isSpinning) return; window.appState.entries = data || []; renderTable(); if(ctx) drawWheel(); const pc = document.getElementById('participant-count'); if(pc) pc.innerText = `${window.appState.entries.length} Peserta siap diputar`; }
+
+        function hybridAddEntry(dataInput){ const newId = 'entry_' + Date.now().toString(36); const payload = { id:newId, data: dataInput }; let localData = JSON.parse(localStorage.getItem(getLocalKey())||'[]'); localData.push(payload); localStorage.setItem(getLocalKey(), JSON.stringify(localData)); updateEntries(localData); if(db){ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(newId).set(dataInput).catch(e=>console.warn(e)); } showFloatingNotif('Berhasil ditambahkan'); }
+        function hybridDeleteEntry(id){ let localData = JSON.parse(localStorage.getItem(getLocalKey())||'[]'); localData = localData.filter(e=>e.id!==id); localStorage.setItem(getLocalKey(), JSON.stringify(localData)); updateEntries(localData); if(db){ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').doc(id).delete().catch(()=>{}); } }
 
         function clearAllData(){ if(!confirm('Yakin ingin menghapus semua data?')) return; localStorage.setItem(getLocalKey(),'[]'); updateEntries([]); if(db){ db.collection('akujuara_rooms').doc(window.appState.roomId).collection('entries').get().then(s=>{ s.forEach(d=>d.ref.delete().catch(()=>{})); }).catch(()=>{});} }
 
-        // === WHEEL (simplified drawing for brevity) ===
-        function setupCanvas(){ if(!canvas) return; const container = document.getElementById('wheel-container'); if(!container) return; const size = Math.max(Math.min(container.clientWidth, 480), 260); const ratio = window.devicePixelRatio || 1; canvas.width = size * ratio; canvas.height = size * ratio; canvas.style.width = size + 'px'; canvas.style.height = size + 'px'; if(ctx) ctx.setTransform(ratio,0,0,ratio,0,0); drawWheel(); }
-        function drawWheel(){ if(!ctx||!canvas) return; const entries = window.appState.entries || []; const cx = canvas.width/2; const cy = canvas.height/2; ctx.clearRect(0,0,canvas.width,canvas.height); const total = Math.max(entries.length,1); const radius = Math.min(canvas.width, canvas.height)/2 - 4; for(let i=0;i<total;i++){ const start = (i/total)*Math.PI*2; const end = ((i+1)/total)*Math.PI*2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,radius,start,end); ctx.closePath(); ctx.fillStyle = generateColor(i,total); ctx.fill(); }
-            // center
-            ctx.beginPath(); ctx.fillStyle='#fff'; ctx.arc(cx,cy, radius*0.26,0,Math.PI*2); ctx.fill(); ctx.font='700 18px Plus Jakarta Sans'; ctx.fillStyle='#0f172a'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('SPIN', cx, cy);
+        // === WHEEL ===
+        function setupCanvas(){ if(!canvas) return; const container=document.getElementById('wheel-container'); if(!container) return; const size=Math.max(Math.min(container.clientWidth,520),260); const ratio=window.devicePixelRatio||1; canvas.width=size*ratio; canvas.height=size*ratio; canvas.style.width=size+'px'; canvas.style.height=size+'px'; if(ctx) ctx.setTransform(ratio,0,0,ratio,0,0); drawWheel(); }
+        function drawWheel(){ if(!ctx||!canvas) return; const entries=window.appState.entries||[]; const cx=canvas.width/2; const cy=canvas.height/2; ctx.clearRect(0,0,canvas.width,canvas.height); const total=Math.max(entries.length,1); const radius=Math.min(canvas.width,canvas.height)/2 - 6; for(let i=0;i<total;i++){ const start=(i/total)*Math.PI*2; const end=((i+1)/total)*Math.PI*2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,radius,start,end); ctx.closePath(); ctx.fillStyle=generateColor(i,total); ctx.fill(); }
+            ctx.beginPath(); ctx.fillStyle='#fff'; ctx.arc(cx,cy,radius*0.24,0,Math.PI*2); ctx.fill(); ctx.font='700 16px Plus Jakarta Sans'; ctx.fillStyle='#0f172a'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('SPIN',cx,cy);
         }
 
         document.getElementById('spin-btn') && document.getElementById('spin-btn').addEventListener('click', spinWheel);
-        function spinWheel(){ const entries = window.appState.entries || []; if(entries.length===0){ showCustomAlert('Info','Data peserta masih kosong!'); return; } if(window.appState.isSpinning) return; window.appState.isSpinning = true; // basic spin emulation
-            const winner = entries[Math.floor(Math.random()*entries.length)]; setTimeout(()=>{ saveWinner((winner.data && (winner.data.name || winner.data.nama)) || 'Pemenang'); window.appState.isSpinning=false; }, 1200);
-        }
+        function spinWheel(){ const entries=window.appState.entries||[]; if(entries.length===0){ showCustomAlert('Info','Data peserta masih kosong!'); return; } if(window.appState.isSpinning) return; window.appState.isSpinning=true; const winner=entries[Math.floor(Math.random()*entries.length)]; setTimeout(()=>{ saveWinner((winner.data && (winner.data.name || winner.data.nama))||'Pemenang'); window.appState.isSpinning=false; },1200); }
 
-        function showFloatingNotif(msg){ const el = document.createElement('div'); el.className='floating-notif'; el.innerText = msg; document.body.appendChild(el); setTimeout(()=> el.remove(), 2200); }
+        function showFloatingNotif(msg){ const el=document.createElement('div'); el.className='floating-notif'; el.innerText=msg; document.body.appendChild(el); setTimeout(()=> el.remove(),2600); }
 
-        // === RENDER TABLE (scoped to view-data) ===
-        function renderTable(){ const thead = document.querySelector('#view-data #table-head'); const tbody = document.querySelector('#view-data #table-body'); const emptyState = document.querySelector('#view-data #empty-state'); const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); if(!thead||!tbody||!emptyState) return; if(window.appState.entries.length===0){ emptyState.classList.remove('hide'); thead.innerHTML=''; tbody.innerHTML=''; return; } emptyState.classList.add('hide'); const visibleCols = form.columns.filter(c=>c.visible); const headers = ['No', ...visibleCols.map(c=>c.label), 'Aksi']; thead.innerHTML = `<tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr>`; tbody.innerHTML = window.appState.entries.map((e,i)=>{ const cells = visibleCols.map(c=>`<td>${(e.data && (e.data[c.key]||''))||'-'}</td>`).join(''); return `<tr><td class='text-center font-bold'>${i+1}</td>${cells}<td class='text-center'><button onclick="hybridDeleteEntry('${e.id}')" class='bg-red-50 px-2 py-1 rounded'>Hapus</button></td></tr>`; }).join(''); }
+        // === RENDER TABLE ===
+        function renderTable(){ const thead=document.querySelector('#view-data #table-head'); const tbody=document.querySelector('#view-data #table-body'); const emptyState=document.querySelector('#view-data #empty-state'); const form=(window.appState.forms && window.appState.forms[window.appState.selectedForm])||defaultFormSchema(); if(!thead||!tbody||!emptyState) return; if(window.appState.entries.length===0){ emptyState.classList.remove('hide'); thead.innerHTML=''; tbody.innerHTML=''; return; } emptyState.classList.add('hide'); const visibleCols=form.columns.filter(c=>c.visible); const headers=['No', ...visibleCols.map(c=>c.label), 'Aksi']; thead.innerHTML=`<tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr>`; tbody.innerHTML=window.appState.entries.map((e,i)=>{ const cells=visibleCols.map(c=>`<td>${(e.data && (e.data[c.key]||''))||'-'}</td>`).join(''); return `<tr><td class='text-center font-bold'>${i+1}</td>${cells}<td class='text-center'><button onclick="hybridDeleteEntry('${e.id}')" class='bg-red-50 px-2 py-1 rounded'>Hapus</button></td></tr>`; }).join(''); }
 
         // === EXPORT / IMPORT ===
-        function exportToExcel(){ if(window.appState.entries.length===0){ showCustomAlert('Info','Tidak ada data untuk diexport'); return;} const data = window.appState.entries.map((e,i)=>({No:i+1,...e.data})); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Data'); XLSX.writeFile(wb, `undian_${window.appState.roomId||'room'}.xlsx`); }
-        function exportToPDF(){ if(window.appState.entries.length===0){ showCustomAlert('Info','Tidak ada data untuk diexport'); return;} const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.text('Data Undian',14,20); doc.save(`undian_${window.appState.roomId||'room'}.pdf`); }
-        function processImport(event){ const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = (e)=>{ try{ const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data,{type:'array'}); const first = workbook.Sheets[workbook.SheetNames[0]]; const rows = XLSX.utils.sheet_to_json(first); const mapped = rows.map((r,idx)=>({ id:'entry_'+Date.now().toString(36)+'_'+idx, data: r })); localStorage.setItem(getLocalKey(), JSON.stringify(mapped)); updateEntries(mapped); showFloatingNotif('Import sukses'); }catch(err){ showCustomAlert('Gagal','Import file gagal. Pastikan format benar.'); } }; reader.readAsArrayBuffer(file); }
+        function exportToExcel(){ if(window.appState.entries.length===0){ showCustomAlert('Info','Tidak ada data untuk diexport'); return; } const data=window.appState.entries.map((e,i)=>({No:i+1,...e.data})); const ws=XLSX.utils.json_to_sheet(data); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Data'); XLSX.writeFile(wb,`undian_${window.appState.roomId||'room'}.xlsx`); }
+        function exportToPDF(){ if(window.appState.entries.length===0){ showCustomAlert('Info','Tidak ada data untuk diexport'); return; } const { jsPDF } = window.jspdf; const doc=new jsPDF(); doc.text('Data Undian',14,20); doc.save(`undian_${window.appState.roomId||'room'}.pdf`); }
+        function processImport(event){ const file=event.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=(e)=>{ try{ const data=new Uint8Array(e.target.result); const workbook=XLSX.read(data,{type:'array'}); const first=workbook.Sheets[workbook.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(first); const mapped=rows.map((r,idx)=>({ id:'entry_'+Date.now().toString(36)+'_'+idx, data:r })); localStorage.setItem(getLocalKey(),JSON.stringify(mapped)); updateEntries(mapped); showFloatingNotif('Import sukses'); }catch(err){ showCustomAlert('Gagal','Import file gagal. Pastikan format benar.'); } }; reader.readAsArrayBuffer(file); }
 
         // === WINNERS ===
-        function loadWinners(){ const list = document.getElementById('winner-history-list'); let winners = JSON.parse(localStorage.getItem(getWinnerKey())||'[]') || []; window.appState.winners = winners; if(!list) return; if(winners.length===0) list.innerHTML = `<p class='text-xs text-slate-500 italic'>Belum ada pemenang</p>`; else list.innerHTML = winners.map(w=>`<div class='text-sm font-bold'>${w.name}</div>`).join(''); }
-        function saveWinner(name){ window.appState.winners.unshift({ name, time: Date.now() }); if(window.appState.winners.length>10) window.appState.winners.pop(); localStorage.setItem(getWinnerKey(), JSON.stringify(window.appState.winners)); loadWinners(); showFloatingNotif('Pemenang: '+name); }
+        function loadWinners(){ const list=document.getElementById('winner-history-list'); let winners=JSON.parse(localStorage.getItem(getWinnerKey())||'[]')||[]; window.appState.winners=winners; if(!list) return; if(winners.length===0) list.innerHTML=`<p class='text-xs text-slate-500 italic'>Belum ada pemenang</p>`; else list.innerHTML=winners.map(w=>`<div class='text-sm font-bold'>${w.name}</div>`).join(''); }
+        function saveWinner(name){ window.appState.winners.unshift({ name, time: Date.now() }); if(window.appState.winners.length>10) window.appState.winners.pop(); localStorage.setItem(getWinnerKey(), JSON.stringify(window.appState.winners)); loadWinners(); showFloatingNotif('Pemenang: '+name); confetti(); }
+
+        function confetti(){ try{ confettiLib && confettiLib(); }catch(e){} }
 
         // === FORMS ===
         function defaultFormSchema(){ return { name:'Form Utama', columns:[ { key:'name', label:'Nama', visible:true, required:true }, { key:'category', label:'Divisi', visible:true, required:false } ] }; }
-        function loadForms(){ const raw = localStorage.getItem(getFormsKey()); if(raw){ try{ window.appState.forms = JSON.parse(raw); }catch(e){ window.appState.forms=[defaultFormSchema()]; } } else { window.appState.forms = [defaultFormSchema()]; saveFormsToStorage(); } }
+        function loadForms(){ const raw=localStorage.getItem(getFormsKey()); if(raw){ try{ window.appState.forms=JSON.parse(raw); }catch(e){ window.appState.forms=[defaultFormSchema()]; } } else { window.appState.forms=[defaultFormSchema()]; saveFormsToStorage(); } }
         function saveFormsToStorage(){ localStorage.setItem(getFormsKey(), JSON.stringify(window.appState.forms)); renderFormsView(); renderManualForm(); renderTable(); }
 
-        function handleAddFormRequest(){ if(window.appState.forms.length>=7){ showCustomAlert('Batas','Maksimal 7 formulir.'); return; } if(window.appState.forms.length>=3 && !isUnlocked()){ window.open(SAWERIA,'_blank'); showCustomAlert('Donasi','Untuk membuka lebih banyak formulir, dukung kami di Saweria.'); return; } addEmptyForm(); }
-        function addEmptyForm(){ const f = { name:`Form ${window.appState.forms.length+1}`, columns:[ { key:'name', label:'Nama', visible:true, required:true }, { key:'extra', label:'Keterangan', visible:true, required:false } ] }; window.appState.forms.push(f); saveFormsToStorage(); }
+        function handleAddFormRequest(){ if(window.appState.forms.length>=7){ showCustomAlert('Batas','Maksimal 7 formulir.'); return; } if(window.appState.forms.length>=3 && !isUnlocked()){ // show donation modal to guide user
+                showDonationModal(); return; } addEmptyForm(); }
+        function addEmptyForm(){ const f={ name:`Form ${window.appState.forms.length+1}`, columns:[ { key:'name', label:'Nama', visible:true, required:true } ] }; window.appState.forms.push(f); saveFormsToStorage(); }
         function deleteForm(idx){ if(!confirm('Hapus formulir ini?')) return; window.appState.forms.splice(idx,1); if(window.appState.selectedForm>=window.appState.forms.length) window.appState.selectedForm=0; saveFormsToStorage(); }
-        function editFormName(idx){ const name = prompt('Nama formulir:', window.appState.forms[idx].name); if(name!==null){ window.appState.forms[idx].name = name.trim()||window.appState.forms[idx].name; saveFormsToStorage(); } }
-        function toggleColumnVisibility(formIdx,colKey){ const form = window.appState.forms[formIdx]; const col = form.columns.find(c=>c.key===colKey); if(!col) return; if(col.required) return; col.visible = !col.visible; saveFormsToStorage(); }
-        function editColumnLabel(formIdx,colKey){ const form = window.appState.forms[formIdx]; const col = form.columns.find(c=>c.key===colKey); if(!col) return; const label = prompt('Label kolom:', col.label); if(label!==null){ col.label = label.trim()||col.label; saveFormsToStorage(); } }
-        function selectForm(idx){ window.appState.selectedForm = idx; renderManualForm(); renderFormsView(); renderTable(); }
+        function editFormName(idx){ const name=prompt('Nama formulir:', window.appState.forms[idx].name); if(name!==null){ window.appState.forms[idx].name=name.trim()||window.appState.forms[idx].name; saveFormsToStorage(); } }
+        function toggleColumnVisibility(formIdx,colKey){ const form=window.appState.forms[formIdx]; const col=form.columns.find(c=>c.key===colKey); if(!col) return; if(col.required) return; col.visible=!col.visible; saveFormsToStorage(); }
+        function editColumnLabel(formIdx,colKey){ const form=window.appState.forms[formIdx]; const col=form.columns.find(c=>c.key===colKey); if(!col) return; const label=prompt('Label kolom:', col.label); if(label!==null){ col.label=label.trim()||col.label; saveFormsToStorage(); } }
+        function selectForm(idx){ window.appState.selectedForm=idx; renderManualForm(); renderFormsView(); renderTable(); }
 
-        function renderFormsView(){ const container = document.getElementById('forms-list'); if(!container) return; container.innerHTML = window.appState.forms.map((f,i)=>`<div class='p-3 bg-white rounded-lg shadow-sm'><div class='flex justify-between items-start'><div><div class='text-sm font-bold'>${f.name}</div><div class='text-xs text-slate-500'>${f.columns.filter(c=>c.visible).map(c=>c.label).join(', ')||'Kosong'}</div></div><div class='flex gap-2'><button class='px-2 py-1 text-xs border rounded' onclick='selectForm(${i})'>Pilih</button><button class='px-2 py-1 text-xs border rounded' onclick='editFormName(${i})'>Edit</button><button class='px-2 py-1 text-xs border rounded text-red-600' onclick='deleteForm(${i})'>Hapus</button></div></div><div class='mt-3 text-xs'><div class='font-bold mb-1'>Kelola Kolom</div>${f.columns.map(col=>`<div class='flex items-center gap-2 mb-1'><input type='checkbox' ${col.visible?'checked':''} ${col.required?'disabled':''} onclick="toggleColumnVisibility(${i},'${col.key}')"/><div class='flex-1 text-sm'>${col.label} ${col.required?'<span class=\'text-xs text-amber-500\'>(wajib)</span>':''}</div><button class='text-xs text-slate-500' onclick="editColumnLabel(${i},'${col.key}')">Ubah</button></div>`).join('')}<div class='mt-2'><button class='text-xs bg-amber-500 text-white px-2 py-1 rounded' onclick='handleAddCustomColumn(${i})'>Tambah Kolom Custom</button></div></div></div>`).join(''); Array.from(container.children).forEach((el,idx)=>{ if(idx===window.appState.selectedForm) el.classList.add('ring-2','ring-sky-200'); else el.classList.remove('ring-2','ring-sky-200'); }); }
+        function renderFormsView(){ const container=document.getElementById('forms-list'); if(!container) return; container.innerHTML = window.appState.forms.map((f,i)=>`<div class='p-3 bg-white rounded-lg shadow-sm'><div class='flex justify-between items-start'><div><div class='text-sm font-bold'>${f.name}</div><div class='text-xs text-slate-500 mt-1'>${f.columns.filter(c=>c.visible).map(c=>c.label).join(', ')||'Kosong'}</div></div><div class='flex gap-2'><button class='px-2 py-1 text-xs border rounded' onclick='selectForm(${i})'>Pilih</button><button class='px-2 py-1 text-xs border rounded' onclick='editFormName(${i})'>✏️</button><button class='px-2 py-1 text-xs border rounded text-red-600' onclick='deleteForm(${i})'>🗑️</button></div></div><div class='mt-3 text-xs'><div class='font-bold mb-1'>Kelola Kolom</div>${f.columns.map(col=>`<div class='flex items-center gap-2 mb-1'><input type='checkbox' ${col.visible?'checked':''} ${col.required?'disabled':''} onclick="toggleColumnVisibility(${i},'${col.key}')" /><div class='flex-1 text-sm'>${col.label} ${col.required?'<span class=\'text-xs text-amber-500\'>(wajib)</span>':''}</div><button class='text-xs text-slate-500' onclick="editColumnLabel(${i},'${col.key}')">✏️</button></div>`).join('')}<div class='mt-2'><button class='text-xs bg-amber-500 text-white px-2 py-1 rounded' onclick='handleAddCustomColumn(${i})'>Tambah Kolom Custom</button></div></div></div>`).join(''); Array.from(container.children).forEach((el,idx)=>{ if(idx===window.appState.selectedForm) el.classList.add('ring-2','ring-sky-200'); else el.classList.remove('ring-2','ring-sky-200'); }); }
 
-        // === CUSTOM COLUMNS gating to Saweria if >3
+        // custom columns gating
         function handleAddCustomColumnRequest(){ handleAddCustomColumn(window.appState.selectedForm); }
-        function handleAddCustomColumn(formIdx){ const form = window.appState.forms[formIdx]; const customCount = form.columns.filter(c=>!c.required).length; if(customCount>=3 && !isUnlocked()){ // gate here
-                window.open(SAWERIA,'_blank'); showCustomAlert('Donasi','Untuk menambah kolom lebih dari 3, dukung kami di Saweria.'); return; }
-            const key = 'custom_' + Date.now().toString(36); form.columns.push({ key, label: 'Custom', visible: true, required: false }); saveFormsToStorage(); }
+        function handleAddCustomColumn(formIdx){ const form=window.appState.forms[formIdx]; const customCount=form.columns.filter(c=>!c.required).length; if(customCount>=3 && !isUnlocked()){ showDonationModal(); return; } const key='custom_'+Date.now().toString(36); form.columns.push({ key, label:'Custom', visible:true, required:false }); saveFormsToStorage(); }
 
-        // === MANUAL FORM render & actions ===
-        function renderManualForm(){ const fieldsContainer = document.getElementById('manual-form-fields'); const shortInput = document.getElementById('shortlink-input'); const activeFormName = document.getElementById('active-form-name'); const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); if(!fieldsContainer) return; fieldsContainer.innerHTML = form.columns.map(col=>`<div><label class='block text-sm font-semibold mb-1'>${col.label}${col.required?' *':''}</label><input name='${col.key}' class='solid-input w-full manual-input' ${col.required?'required':''} placeholder='${col.label}' data-key='${col.key}' /></div>`).join(''); if(shortInput) shortInput.value = `${location.origin}/${window.appState.roomId}`; if(activeFormName) activeFormName.innerText = form.name; Array.from(document.querySelectorAll('.manual-input')).forEach(inp=>{ inp.removeEventListener('input', livePreviewListener); inp.addEventListener('input', livePreviewListener); }); // autofocus first
-            const first = document.querySelector('.manual-input'); if(first) first.focus(); updateLivePreview(); }
+        // allow edit/remove column directly from manual form
+        function editColumnInSelectedForm(key){ const form=(window.appState.forms && window.appState.forms[window.appState.selectedForm])||defaultFormSchema(); const col=form.columns.find(c=>c.key===key); if(!col) return; const label=prompt('Ubah label:', col.label); if(label!==null){ col.label=label.trim()||col.label; saveFormsToStorage(); } }
+        function removeColumnInSelectedForm(key){ const form=(window.appState.forms && window.appState.forms[window.appState.selectedForm])||defaultFormSchema(); const col=form.columns.find(c=>c.key===key); if(!col || col.required) { showCustomAlert('Tidak bisa','Kolom wajib tidak bisa dihapus'); return; } if(!confirm('Hapus kolom ini?')) return; form.columns = form.columns.filter(c=>c.key!==key); saveFormsToStorage(); }
+
+        // render manual form
+        function renderManualForm(){ const fieldsContainer=document.getElementById('manual-form-fields'); const shortInput=document.getElementById('shortlink-input'); const activeFormName=document.getElementById('active-form-name'); const form=(window.appState.forms && window.appState.forms[window.appState.selectedForm])||defaultFormSchema(); if(!fieldsContainer) return; fieldsContainer.innerHTML = form.columns.map(col=>`<div><label class='block text-sm font-semibold mb-1'>${col.label}${col.required?' *':''}</label><div class='flex gap-2'><input name='${col.key}' class='solid-input w-full manual-input' ${col.required?'required':''} placeholder='${col.label}' data-key='${col.key}' /><div class='flex flex-col gap-1'><button type='button' title='Ubah label' onclick="editColumnInSelectedForm('${col.key}')">✏️</button><button type='button' title='Hapus kolom' onclick="removeColumnInSelectedForm('${col.key}')">🗑️</button></div></div></div>`).join(''); if(shortInput) shortInput.value = `${location.origin}/${window.appState.roomId}`; if(activeFormName) activeFormName.innerText = form.name; Array.from(document.querySelectorAll('.manual-input')).forEach(inp=>{ inp.removeEventListener('input', livePreviewListener); inp.addEventListener('input', livePreviewListener); }); const first=document.querySelector('.manual-input'); if(first) first.focus(); updateLivePreview(); }
         function livePreviewListener(){ updateLivePreview(); }
-        function updateLivePreview(){ const form = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); const preview={}; Array.from(document.querySelectorAll('.manual-input')).forEach(inp=>{ const k = inp.getAttribute('data-key'); preview[k] = inp.value; }); const el = document.getElementById('manual-live-preview'); if(!el) return; const parts = Object.keys(preview).map(k=>`${k}: ${preview[k]||'-'}`); el.innerText = parts.join(' | '); }
-        function resetManualForm(){ const f = document.getElementById('manual-entry-form'); if(f){ f.reset(); updateLivePreview(); const first = document.querySelector('.manual-input'); if(first) first.focus(); } }
-        function addEntryFromForm(e){ e.preventDefault(); const formEl = document.getElementById('manual-entry-form'); const formData = new FormData(formEl); const formSchema = (window.appState.forms && window.appState.forms[window.appState.selectedForm]) || defaultFormSchema(); const data = {}; formSchema.columns.forEach(col=>{ data[col.key] = formData.get(col.key) || ''; }); hybridAddEntry(data); formEl.reset(); updateLivePreview(); }
+        function updateLivePreview(){ const form=(window.appState.forms && window.appState.forms[window.appState.selectedForm])||defaultFormSchema(); const preview={}; Array.from(document.querySelectorAll('.manual-input')).forEach(inp=>{ const k=inp.getAttribute('data-key'); preview[k]=inp.value; }); const el=document.getElementById('manual-live-preview'); if(!el) return; const parts=Object.keys(preview).map(k=>`${k}: ${preview[k]||'-'}`); el.innerText = parts.join(' | '); }
+        function resetManualForm(){ const f=document.getElementById('manual-entry-form'); if(f){ f.reset(); updateLivePreview(); const first=document.querySelector('.manual-input'); if(first) first.focus(); } }
+        function addEntryFromForm(e){ e.preventDefault(); const formEl=document.getElementById('manual-entry-form'); const formData=new FormData(formEl); const formSchema=(window.appState.forms && window.appState.forms[window.appState.selectedForm])||defaultFormSchema(); const data={}; formSchema.columns.forEach(col=>{ data[col.key]=formData.get(col.key)||''; }); hybridAddEntry(data); formEl.reset(); updateLivePreview(); }
 
-        // Shortlink copy (use /ROOM format)
+        // public view behavior
+        function openPublicView(){ // show public registration simple form matching selected form
+            const publicView=document.getElementById('public-view'); if(!publicView) return; publicView.classList.remove('hide'); const fields = document.getElementById('public-form-fields'); fields.innerHTML = ''; const form=(window.appState.forms && window.appState.forms[window.appState.selectedForm])||defaultFormSchema(); form.columns.forEach(col=>{ fields.innerHTML += `<div><label class='block text-sm font-semibold mb-1'>${col.label}${col.required?' *':''}</label><input name='${col.key}' class='solid-input w-full' ${col.required?'required':''} placeholder='${col.label}' /></div>`; }); }
+        function closePublicView(){ document.getElementById('public-view').classList.add('hide'); }
+        function submitPublicRegistration(e){ e.preventDefault(); const formEl=document.getElementById('public-register-form'); const formData=new FormData(formEl); const formSchema=(window.appState.forms && window.appState.forms[window.appState.selectedForm])||defaultFormSchema(); const data={}; formSchema.columns.forEach(col=>{ data[col.key]=formData.get(col.key)||''; }); // add to remote so admin sees realtime
+            hybridAddEntry(data); showCustomAlert('Terima Kasih','Anda telah terdaftar!'); closePublicView(); }
+
+        // Shortlink copy
         function copyShortlink(){ const short = `${location.origin}/${window.appState.roomId}`; navigator.clipboard && navigator.clipboard.writeText(short).then(()=>{ showCustomAlert('Berhasil','Shortlink disalin ke Clipboard!'); }).catch(()=>{ showCustomAlert('Gagal','Sistem operasi menolak copy otomatis.'); }); }
 
         // ROOM creation limit gating
-        function handleCreateNewRoomRequest(){ const count = parseInt(localStorage.getItem(getRoomCountKey())||'0',10); if(count>=3 && !isUnlocked()){ window.open(SAWERIA,'_blank'); showCustomAlert('Batas','Untuk membuat lebih banyak room, dukung via Saweria.'); return; } createNewRoom(); }
+        function handleCreateNewRoomRequest(){ const count = parseInt(localStorage.getItem(getRoomCountKey())||'0',10); if(count>=3 && !isUnlocked()){ showDonationModal(); return; } createNewRoom(); }
         function createNewRoom(){ guestCode = Math.random().toString(36).substring(2,8).toUpperCase(); window.appState.roomId = guestCode; document.getElementById('header-room-id').innerText = `Room: ${guestCode}`; document.getElementById('shortlink-input') && (document.getElementById('shortlink-input').value = `${location.origin}/${guestCode}`); localStorage.setItem(getRoomCountKey(), String((parseInt(localStorage.getItem(getRoomCountKey())||'0',10)+1))); }
 
-        function openHistoryModal(){ showCustomAlert('Room History', 'Room: ' + window.appState.roomId + '\nPeserta: ' + window.appState.entries.length + '\nPemenang: ' + window.appState.winners.length); }
+        function openHistoryModal(){ showCustomAlert('Room History','Room: ' + window.appState.roomId + '\nPeserta: ' + window.appState.entries.length + '\nPemenang: ' + window.appState.winners.length); }
 
-        // Share link generation
+        // share link generation (kept for completeness)
         function generateShareLink(){ const base = window.location.host; const link = `https://${base}/${window.appState.roomId}`; const linkEl = document.getElementById('share-link-text'); if(linkEl) linkEl.innerText = link; }
 
-        // Robust UI switcher - prevents getting stuck
-        function bindNavButtons(){ const buttons = document.querySelectorAll('#bottom-navbar .nav-btn'); buttons.forEach(btn=>{ btn.addEventListener('click', (ev)=>{ const view = btn.getAttribute('data-view'); switchView(view); }); btn.addEventListener('touchend', (ev)=>{ ev.preventDefault(); const view = btn.getAttribute('data-view'); switchView(view); }); }); // fab
-            document.getElementById('fab-btn').addEventListener('click', ()=>{ copyShortlink(); }); }
+        // Robust UI switcher
+        function bindNavButtons(){ const buttons=document.querySelectorAll('#bottom-navbar .nav-btn'); buttons.forEach(btn=>{ btn.addEventListener('click', ()=>{ const view=btn.getAttribute('data-view'); switchView(view); }); btn.addEventListener('touchend', (ev)=>{ ev.preventDefault(); const view=btn.getAttribute('data-view'); switchView(view); }); }); document.getElementById('fab-btn') && document.getElementById('fab-btn').addEventListener('click', ()=>{ copyShortlink(); }); }
 
-        function switchView(viewName){ if(window.appState.isSwitchingView) return; const target = document.getElementById('view-'+viewName); if(!target) return; window.appState.isSwitchingView = true; document.querySelectorAll('section[id^="view-"]').forEach(el=> el.classList.add('hide')); target.classList.remove('hide'); // update nav active
-            document.querySelectorAll('#bottom-navbar .nav-btn').forEach(btn=>{ btn.classList.remove('active'); if(btn.getAttribute('data-view')===viewName) btn.classList.add('active'); }); // ensure canvas sized on wheel
-            if(viewName==='wheel'){ setTimeout(()=>{ setupCanvas(); },60); }
-            // show/hide FAB when in data view
-            const fab = document.getElementById('fab-share'); if(fab){ if(viewName==='data' && window.innerWidth <= 768) fab.style.display='block'; else fab.style.display='none'; }
-            setTimeout(()=>{ window.appState.isSwitchingView=false; }, 220);
-        }
+        function switchView(viewName){ if(window.appState.isSwitchingView) return; const target=document.getElementById('view-'+viewName); if(!target) return; window.appState.isSwitchingView=true; document.querySelectorAll('section[id^="view-"]').forEach(el=> el.classList.add('hide')); target.classList.remove('hide'); document.querySelectorAll('#bottom-navbar .nav-btn').forEach(btn=>{ btn.classList.remove('active'); if(btn.getAttribute('data-view')===viewName) btn.classList.add('active'); }); if(viewName==='wheel'){ setTimeout(()=>{ setupCanvas(); },60); } const fab=document.getElementById('fab-share'); if(fab){ if(viewName==='data' && window.innerWidth<=768) fab.style.display='block'; else fab.style.display='none'; } setTimeout(()=>{ window.appState.isSwitchingView=false; },220); }
 
-        // small helper to show floating notifications
-        function showFloating(msg){ const f = document.createElement('div'); f.className='floating-notif'; f.innerText = msg; document.body.appendChild(f); setTimeout(()=> f.remove(), 1800); }
+        function showFloating(msg){ const f=document.createElement('div'); f.className='floating-notif'; f.innerText=msg; document.body.appendChild(f); setTimeout(()=> f.remove(),1800); }
 
         // Init
-        document.addEventListener('DOMContentLoaded', ()=>{ if(sessionStorage.getItem('logged_in')) fallbackProceed(); else document.getElementById('portal-view').classList.remove('hide'); });
+        document.addEventListener('DOMContentLoaded', ()=>{ // ensure Jakarta font in all
+            if(window.appState.isPublicMode && guestCode){ // if shortlink public, load forms and show public view
+                loadForms(); loadWinners(); initDataSync(); openPublicView(); document.getElementById('portal-view').classList.add('hide');
+            } else {
+                if(sessionStorage.getItem('logged_in')) fallbackProceed(); else document.getElementById('portal-view').classList.remove('hide');
+            }
+        });
         document.addEventListener('keypress', (e)=>{ if(e.key==='Enter' && !document.getElementById('portal-view').classList.contains('hide')) handleEmailLogin(e); });
 
-        // Expose unlock helper for testing after donation (manual step)
+        // expose unlock helper for testing
         window.__unlockAfterDonation = function(){ setUnlocked(); showCustomAlert('Terima Kasih','Fitur tambahan sudah terbuka.'); };
+
+        // helper used earlier (confetti placeholder)
+        function confettiLib(){ try{ window.confetti && window.confetti({ particleCount: 100, spread: 70 }); }catch(e){} }
     </script>
 </body>
 </html>
